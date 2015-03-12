@@ -18,6 +18,24 @@ function strpos(haystack, needle, offset) {
 	    return i === -1 ? false : i;
 }
 
+/**
+
+  */
+function showPlayer(){
+
+	console.log("I am showing the player");
+	$("#myPlayer").show();
+
+}
+
+function hidePlayer(){
+
+	if($("#cause").val() == 0){
+		console.log("I am hidding the player");
+		$("#myPlayer").hide();
+	}
+
+}
 
 function stopPlayer(){
 
@@ -65,7 +83,13 @@ function storeThisPage(){
 	thisPage = document.URL;
 
 	console.log("Storing this page: >>>>> " + thisPage);
-	
+
+	// Is this an storable page?
+	if(!strpos(thisPage, "s_")){
+		console.log("I shall not store this page!");
+		return false;
+	}
+
 	// Is it the front page?
 	console.log("Front? " + strpos(thisPage, "index.html"));
 
@@ -90,18 +114,17 @@ function gotoLastPage(){
 	// Where was I?
 	var lastValue = getKey("lastPage");
 
-	// If the last location is different, I'll go there
+	// If there is a last location, I'll go there
 	if(lastValue == null){
 		console.log("Nothing set");
-		storeKey("lastPage", thisPage);
+		//storeKey("lastPage", thisPage);
+		//storeKey("lastPage", "s_s_backToTheBody.html");
+		window.location = "s_s_backToTheBody.html";
 	}
-	else if(lastValue != thisPage){
-		console.log("Moving to last location: " + lastValue);
-		window.location = lastValue;
-	}
-	// I am in the last location, I will just save it again
 	else{
-		storeKey("lastPage", thisPage);
+		console.log("Going to: " + lastValue);
+		window.location = lastValue;
+		//storeKey("lastPage", thisPage);
 	}
 }
 
