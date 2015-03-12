@@ -8,5 +8,5 @@ Este repositorio es el Template basado en:
 * jQuery Mobile
 * jQuery
 
-La aplicación se encuentra en: git remote add origin https://github.com/lasangha/bhavana_app.git
+La aplicación se encuentra en: https://github.com/lasangha/bhavana_app.git
 
