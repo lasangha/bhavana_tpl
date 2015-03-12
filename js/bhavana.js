@@ -19,7 +19,7 @@ function strpos(haystack, needle, offset) {
 }
 
 /**
-
+  @ not in use?
   */
 function showPlayer(){
 
@@ -33,6 +33,10 @@ function hidePlayer(){
 	if($("#cause").val() == 0){
 		console.log("I am hidding the player");
 		$("#myPlayer").hide();
+	}
+	else{
+		console.log("I am showing the player");
+		$("#myPlayer").show();
 	}
 
 }

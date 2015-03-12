@@ -8,25 +8,28 @@
 <div data-role="page" id="{{page.id}}">
 	<header data-role="header">
 		{% if page.backTo %}
-		<a href="{{page.backTo}}.html" data-iconpos="notext" data-icon="home">Inicio</a>
+		<a href="index.html" data-iconpos="notext" data-icon="home">Inicio</a>
 		{% endif %}
 		<h1>Bhavana | {{page.title}}</h1>
 	</header>
 
-	<div align="center" style="padding: 10px">
-		<div class="ui-corner-all custom-corners">
-			<div class="ui-bar ui-bar-a">
-				{{ content }}
-			</div>
 
-	<form action="#">
-		<select id="cause" onChange="showPlayer()">
-			<option value="0">Seleccione su intención para empezar la sesión...</option>
-			<option value="paz">La Paz</option>
-			<option value="com">Compasión</option>
-			<option value="hum">Humildad</option>
-		</select>
-	</form>
+	<div align="center" style="padding: 10px">
+		<h3 class="ui-bar ui-bar-a ui-corner-all">{{page.title}}</h3>
+		<div class="ui-body ui-body-a ui-corner-all">
+				{{ content }}
+		</div>
+
+		<div class="ui-corner-all custom-corners">
+
+			<form action="#">
+				<select id="cause" onChange="hidePlayer()">
+					<option value="0">Seleccione su intención para empezar la sesión...</option>
+					<option value="paz">La Paz</option>
+					<option value="com">Compasión</option>
+					<option value="hum">Humildad</option>
+				</select>
+			</form>
 
 			<div class="ui-body ui-body-a" id="myPlayer">
 				<p>
@@ -45,7 +48,7 @@
 			<ul>
 				{% if page.backTo %}
 				<li>
-				<a href="{{page.backTo}}.html"data-ajax="false" onClick="return stopPlayer();" data-transition="slidedown" data-icon="arrow-l">Volver</a>
+				<a href="{{page.backTo}}.html" data-ajax="false" onClick="return stopPlayer();" data-transition="slidedown" data-icon="arrow-l">Volver</a>
 				<li>
 				{% endif %}
 
