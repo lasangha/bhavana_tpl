@@ -3,6 +3,10 @@ var mobile = true;
 var thisPage = window.URL;
 var lastPage = "";
 
+var query = window.location.search;
+query = query.replace("?id=","");
+console.log("El id es: " + query);
+
 // http://phpjs.org/functions/strpos/
 function strpos(haystack, needle, offset) {
 	  //  discuss at: http://phpjs.org/functions/strpos/
@@ -37,6 +41,10 @@ function hidePlayer(){
 	else{
 		console.log("I am showing the player");
 		$("#myPlayer").show();
+		$('audio').each(function(){
+			this.currentTime = 0; // Reset time
+			this.play(); // Stop playing
+			});
 	}
 
 }
@@ -152,4 +160,14 @@ function getKey(key){
 //window.localStorage.setItem("key2", "value2");
 //window.localStorage.clear();
 // localStorage is now empty
+
+// Show the intro parts one by one
+function showIntroStuff(){
+
+	$(".review").each(function(index, value) { 
+		$(this).hide();
+		//    console.log('div' + index + ':' + $(this).attr('id')); 
+	});
+
+}
 

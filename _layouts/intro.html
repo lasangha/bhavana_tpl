@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+{% include head.html %}
+
+<body>
+
+<div data-role="page" id="{{page.id}}">
+	<header data-role="header">
+		{% if page.backTo %}
+		<a href="index.html" data-iconpos="notext" data-icon="home">Inicio</a>
+		{% endif %}
+		<h1>Bhavana | {{page.title}}</h1>
+	</header>
+
+		<h3 class="ui-bar ui-bar-a ui-corner-all">{{page.title}}</h3>
+
+				{{ content }}
+
+	<div data-role="navigator">
+		<nav data-role="navbar">
+			<ul>
+				{% if page.backTo %}
+				<li>
+				<a href="{{page.backTo}}.html" data-ajax="false" data-icon="arrow-l">Volver</a>
+				<li>
+				{% endif %}
+
+				{% if page.goTo %}
+				<a href="{{page.goTo}}.html"  data-ajax="false" data-icon="arrow-r">Siguiente</a>
+				{% endif %}
+			</ul>
+		</nav>
+	</div>
+
+	{% include footer.html %}
+</div><!-- end main div-->
+
+</body>
+
+</html>
