@@ -3,9 +3,9 @@ var mobile = true;
 var thisPage = window.URL;
 var lastPage = "";
 
-var query = window.location.search;
-query = query.replace("?id=","");
-console.log("El id es: " + query);
+var id = window.location.search;
+id = id.replace("?id=","");
+console.log("El id es: " + id);
 
 // http://phpjs.org/functions/strpos/
 function strpos(haystack, needle, offset) {
@@ -169,5 +169,17 @@ function showIntroStuff(){
 		//    console.log('div' + index + ':' + $(this).attr('id')); 
 	});
 
+}
+
+// This are all the sessions!!!!
+var tranquilidad = [];
+tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
+tranquilidad.push({desc:"Unos momentos más", cat:"Volver al cuerpo"});
+
+function setTranquilidad(){
+	console.log("Setting tranquilidad");
+	$("#sessionId").text("uno dos tres cuatro");
+	console.log("si" + $("#sessionId").text());
+	$("#sessionDesc").text("uno dos tres cuatro tt");
 }
 
