@@ -1,30 +1,64 @@
 // I'm i running in a mobile device?
 var mobile = true;
+
+function whereAmI(){
+	// are we running in native app or in a browser?
+	window.isphone = false;
+	if(document.URL.indexOf("http://") === -1 
+		&& document.URL.indexOf("https://") === -1) {
+			window.isphone = true;
+			window.mobile = true;
+		}
+
+	if( window.isphone) {
+		console.log("I am on a device");
+		document.addEventListener("deviceready", onDeviceReady, false);
+	} else {
+		console.log("I am on a computer");
+		onDeviceReady();
+	}
+}
+
+function onDeviceReady() {
+	// do everything here.
+}
+
+
 var thisPage = window.URL;
 var lastPage = "";
 
-var sessionId = window.location.search;
-sessionId = sessionId.replace("?id=","");
-console.log("El id es: " + sessionId);
+var sessionId = 0;
+
+function getSessionId(){
+
+	console.log("Getting the session Id");
+
+	sessionId = getKey("sessionId");
+
+	if(sessionId == null){
+		sessionId = '0';
+		storeKey("sessionId", sessionId);
+	}
+}
 
 // http://phpjs.org/functions/strpos/
 function strpos(haystack, needle, offset) {
-	  //  discuss at: http://phpjs.org/functions/strpos/
-	  // original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-	  // improved by: Onno Marsman
-	  // improved by: Brett Zamir (http://brett-zamir.me)
-	  // bugfixed by: Daniel Esteban
-	  //   example 1: strpos('Kevin van Zonneveld', 'e', 5);
-	  //   returns 1: 14
+	//  discuss at: http://phpjs.org/functions/strpos/
+	// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Onno Marsman
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// bugfixed by: Daniel Esteban
+	//   example 1: strpos('Kevin van Zonneveld', 'e', 5);
+	//   returns 1: 14
 
-	  var i = (haystack + '')
-		      .indexOf(needle, (offset || 0));
-	    return i === -1 ? false : i;
+	var i = (haystack + '')
+		.indexOf(needle, (offset || 0));
+	return i === -1 ? false : i;
 }
 
 /**
   @ not in use?
-  */
+ */
 function showPlayer(){
 
 	console.log("I am showing the player");
@@ -49,6 +83,7 @@ function hidePlayer(){
 
 }
 
+// @deprecated?
 function stopPlayer(){
 
 	console.log("Stopping the audio");
@@ -142,7 +177,6 @@ function gotoLastPage(){
 
 // Keys
 function storeKey(key, value){
-	var value = document.URL;
 	console.log("Storing key: " + key);
 	window.localStorage.setItem(key, value);
 	return true;
@@ -156,7 +190,11 @@ function getKey(key){
 
 // keyname is now equal to "key"
 // value is now equal to "value"
-//window.localStorage.removeItem("key");
+function removeKey(theKey){
+	console.log("Removing key: " + theKey);
+	window.localStorage.removeItem(theKey);
+}
+//removeKey("sessionId");
 //window.localStorage.setItem("key2", "value2");
 //window.localStorage.clear();
 // localStorage is now empty
@@ -178,9 +216,11 @@ tranquilidad.push({desc:"Unos momentos más", cat:"Volver al cuerpo"});
 tranquilidadDets = {next: "s_s_backToTheMoment.html?id=0", prev: "index.html", thisIs: "s_s_backToTheBody.html", audios:"backToTheBody"};
 
 // Set sessions for tranquilidad
-function setTranquilidad(tranquilidad){
+function setTranquilidad(){
 
-	console.log(">>Setting tranquilidad width sessionId: " + sessionId );
+	getSessionId();
+
+	console.log(">>Setting tranquilidad width sessionId: " + sessionId);
 
 	// Did I go too far?
 	if(sessionId > (Object.keys(tranquilidad).length - 1)){
@@ -200,20 +240,30 @@ function setTranquilidad(tranquilidad){
 	if(sessionId == (Object.keys(tranquilidad).length - 1)){
 		console.log("I am at my limit, I will link to the next section");
 		$("#nextSession").attr("href", tranquilidadDets.next);
+		$("#nextSession").attr("onClick", "setId(0);");
 	}
 	else{
 		console.log("I still have things to do here");
 		$("#nextSession").attr("href", tranquilidadDets.thisIs + "?id=" + (1 + parseInt(sessionId)));
+		$("#nextSession").attr("onClick", "setId(" + (1 + parseInt(sessionId)) + ");");
 	}
 	// If this is the first id I will link to the previews section
 	if(sessionId == 0){
 		console.log("I am at the beggining, I will ink to the previews section");
 		$("#prevSession").attr("href", tranquilidadDets.prev);
+		$("#prevSession").attr("onClick", "setId(-1);");
 	}
 	else{
 		console.log("I am somewhere in the middle of this section");
 		$("#prevSession").attr("href", tranquilidadDets.thisIs + "?id=" + (sessionId - 1));
+		$("#prevSession").attr("onClick", "setId(" + (sessionId - 1) + ");");
 	}
 
+}
+
+// Set the id of the new section that is comming
+function setId(newSessionId){
+	console.log("Setting the sessionId: " + newSessionId);
+	storeKey("sessionId", newSessionId);
 }
 

@@ -48,9 +48,9 @@
 		<nav data-role="navbar">
 			<ul>
 				<li>
-				<a href="#" data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-l" id="prevSession">Volver</a>
+				<a href="#" data-ajax="false" data-icon="arrow-l" id="prevSession">Volver</a>
 				<li>
-				<a href="#"  data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-r" id="nextSession">Siguiente</a>
+				<a href="#"  data-ajax="false" data-icon="arrow-r" id="nextSession">Siguiente</a>
 			</ul>
 		</nav>
 	</div>
@@ -59,12 +59,25 @@
 </div><!-- end main div-->
 <script>
 
+	whereAmI();
+
 $(document).ready(function($){
 		console.log("Hiding the player");
 		hidePlayer();
-		//setTranquilidad();
 		{{page.script}}
+		//setTranquilidad();
 		});
+
+/*
+   $.ajax({
+url: 'http://localhost/bhavana/api.php?what=addToCause&causeCode=paz&totalTime=888&where=here&who=youToo',
+dataType: "jsonp",
+success: function (data) {
+console.log(data)
+alert(data);
+}
+});
+*/
 </script>
 
 </body>
