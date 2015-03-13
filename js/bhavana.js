@@ -211,7 +211,7 @@ function showIntroStuff(){
 // This are all the sessions!!!!
 var tranquilidad = [];
 tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
-tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
+tranquilidad.push({desc:"Unos momentos...", cat:"Volver al cuerpo"});
 tranquilidad.push({desc:"Unos momentos más", cat:"Volver al cuerpo"});
 tranquilidadDets = {next: "s_s_backToTheMoment.html?id=0", prev: "index.html", thisIs: "s_s_backToTheBody.html", audios:"backToTheBody"};
 
@@ -266,4 +266,4 @@ function setId(newSessionId){
 	console.log("Setting the sessionId: " + newSessionId);
 	storeKey("sessionId", newSessionId);
 }
-
+//localstorage.clear();
