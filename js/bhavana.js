@@ -3,9 +3,9 @@ var mobile = true;
 var thisPage = window.URL;
 var lastPage = "";
 
-var id = window.location.search;
-id = id.replace("?id=","");
-console.log("El id es: " + id);
+var sessionId = window.location.search;
+sessionId = sessionId.replace("?id=","");
+console.log("El id es: " + sessionId);
 
 // http://phpjs.org/functions/strpos/
 function strpos(haystack, needle, offset) {
@@ -44,7 +44,7 @@ function hidePlayer(){
 		$('audio').each(function(){
 			this.currentTime = 0; // Reset time
 			this.play(); // Stop playing
-			});
+		});
 	}
 
 }
@@ -163,7 +163,6 @@ function getKey(key){
 
 // Show the intro parts one by one
 function showIntroStuff(){
-
 	$(".review").each(function(index, value) { 
 		$(this).hide();
 		//    console.log('div' + index + ':' + $(this).attr('id')); 
@@ -174,12 +173,47 @@ function showIntroStuff(){
 // This are all the sessions!!!!
 var tranquilidad = [];
 tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
+tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
 tranquilidad.push({desc:"Unos momentos más", cat:"Volver al cuerpo"});
+tranquilidadDets = {next: "s_s_backToTheMoment.html?id=0", prev: "index.html", thisIs: "s_s_backToTheBody.html", audios:"backToTheBody"};
 
-function setTranquilidad(){
-	console.log("Setting tranquilidad");
-	$("#sessionId").text("uno dos tres cuatro");
+// Set sessions for tranquilidad
+function setTranquilidad(tranquilidad){
+
+	console.log(">>Setting tranquilidad width sessionId: " + sessionId );
+
+	// Did I go too far?
+	if(sessionId > (Object.keys(tranquilidad).length - 1)){
+		console.log("The person is requesting a page beyond the scope of this session, I will reach my end");
+		sessionId = (Object.keys(tranquilidad).length - 1);
+	}
+
+	console.log("Setting tranquilidad width sessionId: " + sessionId);
+
+	$("#sessionId").text(tranquilidad[sessionId].desc);
 	console.log("si" + $("#sessionId").text());
-	$("#sessionDesc").text("uno dos tres cuatro tt");
+	$("#sessionDesc").text(tranquilidad[sessionId].desc);
+	$("#meditationSource").attr("src", "audio/meditations/" + tranquilidadDets.audios + "_" + sessionId + ".mp3").detach().appendTo("#meditationPlayer");;
+
+	// Next and back
+	// If this is the end, I will use the next section
+	if(sessionId == (Object.keys(tranquilidad).length - 1)){
+		console.log("I am at my limit, I will link to the next section");
+		$("#nextSession").attr("href", tranquilidadDets.next);
+	}
+	else{
+		console.log("I still have things to do here");
+		$("#nextSession").attr("href", tranquilidadDets.thisIs + "?id=" + (1 + parseInt(sessionId)));
+	}
+	// If this is the first id I will link to the previews section
+	if(sessionId == 0){
+		console.log("I am at the beggining, I will ink to the previews section");
+		$("#prevSession").attr("href", tranquilidadDets.prev);
+	}
+	else{
+		console.log("I am somewhere in the middle of this section");
+		$("#prevSession").attr("href", tranquilidadDets.thisIs + "?id=" + (sessionId - 1));
+	}
+
 }
 

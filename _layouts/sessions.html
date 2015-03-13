@@ -18,8 +18,8 @@
 		<h3 class="ui-bar ui-bar-a ui-corner-all">{{page.title}}</h3>
 		<div class="ui-body ui-body-a ui-corner-all">
 				{{ content }}
-				<h1>Sesión <span id="sessionId">#ttt</span></h1>
-					<p id="sessionDesc">Iniciamos con 3 minutos para la mente...</p>
+				<h1>Sesión <span id="sessionId">#</span></h1>
+					<p id="sessionDesc">#</p>
 		</div>
 
 		<div class="ui-corner-all custom-corners">
@@ -35,7 +35,7 @@
 
 			<div class="ui-body ui-body-a" id="myPlayer">
 				<p>
-				<audio controls id="meditation">
+				<audio controls id="meditationPlayer">
 					<source src="#" type="audio/mpeg" id="meditationSource">
 					Your browser does not support the audio tag.
 				</audio>
@@ -48,9 +48,9 @@
 		<nav data-role="navbar">
 			<ul>
 				<li>
-				<a href="#" data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-l">Volver</a>
+				<a href="#" data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-l" id="prevSession">Volver</a>
 				<li>
-				<a href="#"  data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-r">Siguiente</a>
+				<a href="#"  data-ajax="false" onClick="return stopPlayer();" data-icon="arrow-r" id="nextSession">Siguiente</a>
 			</ul>
 		</nav>
 	</div>
@@ -62,7 +62,8 @@
 $(document).ready(function($){
 		console.log("Hiding the player");
 		hidePlayer();
-		setTranquilidad();
+		//setTranquilidad();
+		{{page.script}}
 		});
 </script>
 
