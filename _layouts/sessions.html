@@ -18,10 +18,8 @@
 		<h3 class="ui-bar ui-bar-a ui-corner-all">{{page.title}}</h3>
 		<div class="ui-body ui-body-a ui-corner-all">
 				{{ content }}
-				<h1>Sesión 1</h1>
-					<p>
-					Iniciamos con 3 minutos para la mente...
-					</p>
+				<h2><p id="sessionDesc">#</p></h2>
+				<h3>Sesión <span id="sessionId">#</span></h3>
 		</div>
 
 		<div class="ui-corner-all custom-corners">
@@ -37,8 +35,8 @@
 
 			<div class="ui-body ui-body-a" id="myPlayer">
 				<p>
-				<audio controls id="meditation">
-					<source src="audio/meditations/{{page.id}}.mp3" type="audio/mpeg">
+				<audio controls id="meditationPlayer">
+					<source src="#" type="audio/mpeg" id="meditationSource">
 					Your browser does not support the audio tag.
 				</audio>
 				</p>
@@ -49,15 +47,10 @@
 	<div data-role="navigator">
 		<nav data-role="navbar">
 			<ul>
-				{% if page.backTo %}
 				<li>
-				<a href="{{page.backTo}}.html" data-ajax="false" onClick="return stopPlayer();" data-transition="slidedown" data-icon="arrow-l">Volver</a>
+				<a href="#" data-ajax="false" data-icon="arrow-l" id="prevSession">Volver</a>
 				<li>
-				{% endif %}
-
-				{% if page.goTo %}
-				<a href="{{page.goTo}}.html"  data-ajax="false" onClick="return stopPlayer();" data-transition="slidedown" data-icon="arrow-r">Siguiente</a>
-				{% endif %}
+				<a href="#"  data-ajax="false" data-icon="arrow-r" id="nextSession">Siguiente</a>
 			</ul>
 		</nav>
 	</div>
@@ -66,10 +59,26 @@
 </div><!-- end main div-->
 <script>
 
+//	whereAmI();
+
 $(document).ready(function($){
 		console.log("Hiding the player");
 		hidePlayer();
+		{{page.script}}
 		});
+
+/*
+   $.ajax({
+url: 'http://localhost/bhavana/api.php?what=addToCause&causeCode=paz&totalTime=888&where=here&who=youToo',
+dataType: "jsonp",
+success: function (data) {
+console.log(data)
+}
+alert(data);
+});
+*/
+//console.log("tons");
+//localstorage.clear();
 </script>
 
 </body>
