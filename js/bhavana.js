@@ -35,7 +35,7 @@ function getSessionId(){
 
 	sessionId = getKey("sessionId");
 
-	if(sessionId == null){
+	if(sessionId == null || sessionId < 0){
 		sessionId = '0';
 		storeKey("sessionId", sessionId);
 	}
@@ -164,14 +164,11 @@ function gotoLastPage(){
 	// If there is a last location, I'll go there
 	if(lastValue == null){
 		console.log("Nothing set");
-		//storeKey("lastPage", thisPage);
-		//storeKey("lastPage", "s_s_backToTheBody.html");
 		window.location = "s_s_backToTheBody.html";
 	}
 	else{
 		console.log("Going to: " + lastValue);
 		window.location = lastValue;
-		//storeKey("lastPage", thisPage);
 	}
 }
 
@@ -209,53 +206,82 @@ function showIntroStuff(){
 }
 
 // This are all the sessions!!!!
-var tranquilidad = [];
-tranquilidad.push({desc:"Unos momentos", cat:"Volver al cuerpo"});
-tranquilidad.push({desc:"Unos momentos...", cat:"Volver al cuerpo"});
-tranquilidad.push({desc:"Unos momentos más", cat:"Volver al cuerpo"});
-tranquilidadDets = {next: "s_s_backToTheMoment.html?id=0", prev: "index.html", thisIs: "s_s_backToTheBody.html", audios:"backToTheBody"};
+// Samatha 1 - Tranquilidad
+var tranquilidadBody = [];
+tranquilidadBody.push({desc:"¿De quién es el cuerpo?", cat:"Volver al cuerpo"});
+tranquilidadBody.push({desc:"¿Cómo se siente este cuerpo?", cat:"Volver al cuerpo"});
+tranquilidadBody.push({desc:"¿Dónde está el cuerpo?", cat:"Volver al cuerpo"});
+tranquilidadBodyDets = {next: "s_s_backToTheMoment.html",
+	prev: "index.html",
+	thisIs: "s_s_backToTheBody.html",
+	audios:"backToTheBody",
+	cat: "Tranquilidad",
+	subCat: "Volver al cuerpo"};
 
-// Set sessions for tranquilidad
-function setTranquilidad(){
+// Samatha 2 - Momento
+var tranquilidadMomento = [];
+tranquilidadMomento.push({desc:"¿Cómo se siente este momento?", cat:"Volver al momento"});
+tranquilidadMomento.push({desc:"¿Hacia dónde se dirige el presente?", cat:"Volver al momento"});
+tranquilidadMomento.push({desc:"¿Cuánto tiempo dura este instante?", cat:"Volver al momento"});
+tranquilidadMomentoDets = {next: "s_s_backToTheMind.html", 
+	prev: "s_s_backToTheBody.html",
+	thisIs: "s_s_backToTheMoment.html",
+	audios:"backToTheMoment",
+	cat: "Tranquilidad",
+	subCat: "Volver al momento"};
+
+// Samatha 3 - Mente
+var tranquilidadMente = [];
+tranquilidadMente.push({desc:"¿Quién piensa?"});
+tranquilidadMente.push({desc:"¿Dónde está el pensamiento?"});
+tranquilidadMente.push({desc:"¿Cómo se siente la mente?"});
+tranquilidadMenteDets = {next: "end.html", 
+	prev: "s_s_backToTheMoment.html",
+	thisIs: "s_s_backToTheMind.html",
+	audios:"backToTheMind",
+	cat: "Tranquilidad",
+	subCat: "Volver a la mente"};
+
+// Set sessions details
+function setSessionDetails(subjects, subjectsDets){
 
 	getSessionId();
 
-	console.log(">>Setting tranquilidad width sessionId: " + sessionId);
+	console.log("Setting subjects with sessionId: " + sessionId);
 
 	// Did I go too far?
-	if(sessionId > (Object.keys(tranquilidad).length - 1)){
+	if(sessionId > (Object.keys(subjects).length - 1)){
 		console.log("The person is requesting a page beyond the scope of this session, I will reach my end");
-		sessionId = (Object.keys(tranquilidad).length - 1);
+		sessionId = (Object.keys(subjects).length - 1);
 	}
 
-	console.log("Setting tranquilidad width sessionId: " + sessionId);
+	console.log("Setting subjects width sessionId: " + sessionId);
 
-	$("#sessionId").text(tranquilidad[sessionId].desc);
-	console.log("si" + $("#sessionId").text());
-	$("#sessionDesc").text(tranquilidad[sessionId].desc);
-	$("#meditationSource").attr("src", "audio/meditations/" + tranquilidadDets.audios + "_" + sessionId + ".mp3").detach().appendTo("#meditationPlayer");;
+	$("#sessionId").text(parseInt(sessionId) + 1);
+	$("#sessionDesc").text(subjects[sessionId].desc);
+	$("#meditationSource").attr("src", "audio/meditations/" + subjectsDets.audios + "_" + sessionId + ".mp3").detach().appendTo("#meditationPlayer");;
 
 	// Next and back
 	// If this is the end, I will use the next section
-	if(sessionId == (Object.keys(tranquilidad).length - 1)){
+	if(sessionId == (Object.keys(subjects).length - 1)){
 		console.log("I am at my limit, I will link to the next section");
-		$("#nextSession").attr("href", tranquilidadDets.next);
+		$("#nextSession").attr("href", subjectsDets.next);
 		$("#nextSession").attr("onClick", "setId(0);");
 	}
 	else{
 		console.log("I still have things to do here");
-		$("#nextSession").attr("href", tranquilidadDets.thisIs + "?id=" + (1 + parseInt(sessionId)));
+		$("#nextSession").attr("href", subjectsDets.thisIs + "?id=" + (1 + parseInt(sessionId)));
 		$("#nextSession").attr("onClick", "setId(" + (1 + parseInt(sessionId)) + ");");
 	}
 	// If this is the first id I will link to the previews section
 	if(sessionId == 0){
 		console.log("I am at the beggining, I will ink to the previews section");
-		$("#prevSession").attr("href", tranquilidadDets.prev);
+		$("#prevSession").attr("href", subjectsDets.prev);
 		$("#prevSession").attr("onClick", "setId(-1);");
 	}
 	else{
 		console.log("I am somewhere in the middle of this section");
-		$("#prevSession").attr("href", tranquilidadDets.thisIs + "?id=" + (sessionId - 1));
+		$("#prevSession").attr("href", subjectsDets.thisIs + "?id=" + (sessionId - 1));
 		$("#prevSession").attr("onClick", "setId(" + (sessionId - 1) + ");");
 	}
 
@@ -266,4 +292,4 @@ function setId(newSessionId){
 	console.log("Setting the sessionId: " + newSessionId);
 	storeKey("sessionId", newSessionId);
 }
-//localstorage.clear();
+
