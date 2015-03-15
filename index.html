@@ -4,38 +4,39 @@ id: index
 title: Bhavana
 ---
 
-<script>
+<div class="ui-corner-all custom-corners">
+	<div class="ui-bar ui-bar-a">
+		<h2>Meditación para la vida diaria</h2>
+	</div>
+	<div class="ui-body ui-body-a">
+	<h3 class="ui-bar ui-bar-a ui-corner-all">Para hoy: <span id="forTodaySubject"></span></h3>
+		<p>Aprenda a meditar y tome control de sus reacciones, gratis, por siempre.</p>
+	</div>
+</div>
 
-	$(document).ready(function($){
+<nav data-role="navbar">
+	<ul>
+		<li>
+		<a href="#" onClick="gotoLastPage()" class="ui-btn ui-shadow ui-icon-forward ui-btn-inline ui-btn-icon-left ui-shadow-icon" data-ajax="false">Ir al Curso</a>
+		</li>
+
+		<li>
+
+		<a href="i_basics.html" class="ui-btn ui-shadow ui-icon-info ui-btn-inline ui-btn-icon-left ui-shadow-icon">Introducción</a>
+		</li>
+	</ul>
+</nav>
+
+<div align="center">
+	<p><img src="img/logo_sangha.png" style="width: 250px"></p>
+</div>
+
+
+<script>
+$(document).ready(function($){
 		console.log("Creating subject");
 		createSubject();
 		});
 </script>
-
-<h2 class="ui-bar ui-bar-a ui-corner-all">Para hoy: <span id="forTodaySubject"></span></h2>
-
-<h3>Meditación para la vida diaria</h3>
-<p>Aprenda a meditar y tome control de sus reacciones, gratis, por siempre.</p>
-
-<div class="mainMenuFrontPage">
-	<!-- Lead story block -->
-	<div class="ui-block-a">
-		<div class="ui-body ui-body-d">
-			<p><img src="img/logo_sangha.png" style="width: 250px"></p>
-		</div>
-	</div>
-	<!-- secondary story block #1 -->
-	<div class="ui-block-b">
-		<div class="ui-body ui-body-d">
-			<p>
-			<a href="#" onClick="gotoLastPage()" class="ui-btn ui-shadow ui-icon-forward ui-btn-inline ui-btn-icon-left ui-shadow-icon" data-ajax="false">Ir al Curso</a>
-			</p>
-			<p>
-				<a href="i_basics.html" class="ui-btn ui-shadow ui-icon-info ui-btn-inline ui-btn-icon-left ui-shadow-icon">Introducción</a>
-			</p>
-		</div>
-	</div>
-</div><!-- /mainMenuFrontPage -->
-<!--h2>~Que todos los seres, en todos los mundos, sean felices!~</h2-->
 
 

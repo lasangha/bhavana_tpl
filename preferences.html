@@ -1,0 +1,28 @@
+---
+layout: default
+id: index
+title: Bhavana
+---
+
+<form>
+	<div class="ui-field-contain">
+		<fieldset data-role="controlgroup">
+			<legend>Quiero participar en las meditaciones globales</legend>
+			<label for="meditateWithThemAll">Si claro!</label>
+			<input name="meditateWithThemAll" id="meditateWithThemAll" type="checkbox">
+		</fieldset>
+		<p>La información es anónima, cada vez que usted medita se envía el tiempo total y la intención escogida, con esto podemos meditar en grupo.</p>
+	</div>
+	<div class="ui-field-contain">
+		<label for="country">¿En que país vive?</label>
+		<br />
+		<input type="text" id="country" name="country" placeholder="El mundo">
+	</div>
+	<input type="submit" onClick="return saveMySettings();" value="Guardar!">
+</form>
+
+
+<script>
+loadMySettings();
+</script>
+

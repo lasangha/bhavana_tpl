@@ -1,14 +1,39 @@
 // I'm i running in a mobile device?
 var mobile = true;
 
+var thisPage = window.URL;
+var lastPage = "";
+
+var sessionId = 0;
+
+function sendMail(){
+	console.log("Sending an email");
+	console.log($('#myName').val());
+	$.ajax({
+		type: 'POST',
+		url: 'http://app.lasangha.org/mailer.php',
+		dataType: "json",
+		data: {
+			from: $('#myName').val(),
+		email: $('#myEmail').val(),
+		msg: $('#text').val(),
+		},
+		success: function (data) {
+			console.log(data)
+		}
+	});
+	return false;
+
+}
+
 function whereAmI(){
 	// are we running in native app or in a browser?
 	window.isphone = false;
 	if(document.URL.indexOf("http://") === -1 
-		&& document.URL.indexOf("https://") === -1) {
-			window.isphone = true;
-			window.mobile = true;
-		}
+			&& document.URL.indexOf("https://") === -1) {
+				window.isphone = true;
+				window.mobile = true;
+			}
 
 	if( window.isphone) {
 		console.log("I am on a device");
@@ -23,11 +48,6 @@ function onDeviceReady() {
 	// do everything here.
 }
 
-
-var thisPage = window.URL;
-var lastPage = "";
-
-var sessionId = 0;
 
 function getSessionId(){
 
@@ -79,6 +99,10 @@ function hidePlayer(){
 			this.currentTime = 0; // Reset time
 			this.play(); // Stop playing
 		});
+
+		// For now I will count it as valid meditation time, I must improve this
+		// Standard meditation sessions are 3 min, I will consider other times later on
+		addToCause(3);
 	}
 
 }
@@ -151,6 +175,44 @@ function storeThisPage(){
 	}
 }
 
+// Save user settings
+function saveMySettings(){
+	console.log("Saving settings");
+	if($("#meditateWithThemAll").is(":checked") == true){
+		console.log("I want to meditate with them all....");
+		storeKey("meditateWithThemAll", true);
+	}else{
+		storeKey("meditateWithThemAll", false);
+		console.log("I will not meditate with them all!");
+	}
+
+	// Country
+	if($("#country").val() != ""){
+		console.log("I live somewhere");
+		storeKey("myCountry", $("#country"));
+	}else{
+		removeKey("myCountry");
+		console.log("I live nowhere");
+	}
+
+	alert("Muchas gracias!");
+	return false;
+}
+// Load them in the settings form
+function loadMySettings(){
+	console.log("Loading settings");
+	if(getKey("meditateWithThemAll", true) == 'true'){
+		console.log("I will participate with the global meditations");
+		$("#meditateWithThemAll").attr("checked", true);
+	}else{
+		console.log("Uncheking the meditation with them all");
+		$("#meditateWithThemAll").attr("checked", false);
+	}
+	return false;
+}
+
+
+// I will take you to the last visited page of the course
 function gotoLastPage(){
 
 	// Where I'm I?
@@ -179,8 +241,15 @@ function storeKey(key, value){
 	return true;
 }
 
-function getKey(key){
+function getKey(key, defaultValue){
+
 	var value = window.localStorage.getItem(key);
+
+	if(value == null){
+		console.log("No value found, I will use the default");
+		value = defaultValue;
+	}
+
 	console.log("Gotten Key: " + key + " with value: " + value);
 	return value;
 }
@@ -191,6 +260,7 @@ function removeKey(theKey){
 	console.log("Removing key: " + theKey);
 	window.localStorage.removeItem(theKey);
 }
+
 //removeKey("sessionId");
 //window.localStorage.setItem("key2", "value2");
 //window.localStorage.clear();
@@ -291,5 +361,24 @@ function setSessionDetails(subjects, subjectsDets){
 function setId(newSessionId){
 	console.log("Setting the sessionId: " + newSessionId);
 	storeKey("sessionId", newSessionId);
+}
+
+// Add meditation times to the causes
+function addToCause(time){
+	$.ajax({
+		type: 'POST',
+	url: 'http://localhost/bhavana/api.php',
+	dataType: "json",
+	data: {
+		what: "addToCause",
+	causeCode: $('#cause').val(),
+	totalTime: time,
+	where: getKey("myCountry", "Nibbana"),
+	who: "me"
+	},
+	success: function (data) {
+		console.log(data)
+	}
+	});
 }
 

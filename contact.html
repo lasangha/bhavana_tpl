@@ -7,13 +7,13 @@ backTo: index
 
 Si tiene dudas respecto al curso, siempre estamos a su lado.
 
-<form>
-	<label for="date">Mi Nombre:</label>
+<form data-ajax="false">
+	<label for="myName">Mi Nombre:</label>
 	<input type="text" name="nombre" id="myName">
-	<label for="date">Mi Correo:</label>
+	<label for="myEmail">Mi Correo:</label>
 	<input type="email" name="myEmai" id="myEmail">
-	<label for="date">Mi pregunta o comentario:</label>
-	<textarea></textarea>
-	<input type="submit" value="Enviar">
-	</form>
+	<label for="text">Mi pregunta o comentario:</label>
+	<textarea id="text"></textarea>
+	<input type="submit" value="Enviar" onClick="return sendMail();">
+</form>
 
