@@ -14,17 +14,39 @@ var lastPage = "";
 
 var sessionId = 0;
 
-var apiPath = "htt://192.168.43.164/bhavana/api.php";
+var apiPath = "http://192.168.43.164/bhavana/api.php";
 
-// I check for connectivity
-function checkConnection(checkFor) {
+function getConnectionType(){
 
-	console.log("Checking for connectivity");
+	console.log("Getting conexion type");
 
 	if(mobile){
 		console.log("I am running on mobile");
 		// Which is the connectivity at the moment
 		var networkState = navigator.connection.type;
+
+		return networkState;
+	}
+	else{
+		console.log("I will assume is a desktop");
+		return "desktop";
+	}
+	
+}
+
+// I check for connectivity, you should ask for the type of connection you want to check for,
+// If you want to see if there is NO connectivity you should say
+// if(checkConnection(false) == true) and that will tell you if there is NO connectivity
+function checkConnection() {
+
+	console.log("Checking for connectivity");
+
+	// Which is the connectivity at the moment
+	var networkState = getConnectionType();
+
+	if(!networkState == "desktop"){
+
+		console.log("I am running on mobile");
 
 		var states = {};
 		states[Connection.UNKNOWN]  = 'Unknown connection';
@@ -36,16 +58,13 @@ function checkConnection(checkFor) {
 		states[Connection.CELL]     = 'Cell generic connection';
 		states[Connection.NONE]     = 'No network connection';
 
-		if(checkFor == false){
-			checkFor = Connection.NONE;
-		}
-
 		// Lets see if I have what you need
-		if(states[networkState] == checkFor){
-			return true;
+		if(states[networkState] == Connection.NONE){
+			console.log("No connection");
+			return false;
 		}
 		else{
-			return false;
+			return true;
 		}
 	}
 	else{
@@ -62,7 +81,7 @@ function sendMail(){
 	console.log("Sending an email");
 	console.log($('#myName').val());
 
-	if(checkConnection(states[Connection.NONE])){
+	if(!checkConnection()){
 		console.log("No connectivity");
 		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
 		return false;
@@ -152,7 +171,7 @@ function hidePlayer(){
 		$("#myPlayer").hide();
 	}
 	else{
-		console.log("I am showing the player");
+		console.log("I am showing the player ?");
 		$("#myPlayer").show();
 		$('audio').each(function(){
 			this.currentTime = 0; // Reset time
@@ -425,11 +444,15 @@ function setId(newSessionId){
 // Add meditation times to the causes
 function addToCause(time){
 
-	if(checkConnection(states[Connection.NONE])){
+	console.log("I will try to submit this to the repository");
+
+	if(checkConnection(false) == false){
 		console.log("No connectivity");
-		//alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
 		return false;
 	}
+
+	console.log("There is connexion, lets send the details");
 
 	$.ajax({
 		type: 'POST',
@@ -493,26 +516,33 @@ function adjustPaths(url){
 
 // I retrieve the medatitation times for each cause
 function getMeditationCausesTimes(){
-	if(checkConnection(false)){
-		return false;
-	}
-	else{
+
+	console.log("I will get the meditation times");
+
+	if(checkConnection() == true){
+		console.log("Getting times");
+
 		//Lets make the connection
 		$.ajax({
-			type: 'POST',
+			type: 'GET',
 		url: apiPath,
 		dataType: "json",
 		data: {
-			what: "addToCause",
-		causeCode: $('#cause').val(),
-		totalTime: time,
-		where: getKey("myCountry", "Nibbana"),
-		who: "me"
+			what: "getCausesTimes",
 		},
 		success: function (data) {
 			console.log(data)
-		}
+		},
+			fail: function(){
+				console.log("Something wrong?");
+			}
 		});
 	}
+	else{
+		console.log("Unable to get meditation causes");
+		return false;
+
+	}
+	console.log("Done macarron");
 }
 
