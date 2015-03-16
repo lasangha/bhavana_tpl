@@ -1,14 +1,73 @@
 // I'm i running in a mobile device?
-var mobile = true;
+var mobile = false;
 
+/*
+if(device.platform.toLowerCase() === "android"){
+	console.log("I am running on a mobile device");
+	mobile = true;
+}
+*/
+
+// Conection states
 var thisPage = window.URL;
 var lastPage = "";
 
 var sessionId = 0;
 
+var apiPath = "htt://192.168.43.164/bhavana/api.php";
+
+// I check for connectivity
+function checkConnection(checkFor) {
+
+	console.log("Checking for connectivity");
+
+	if(mobile){
+		console.log("I am running on mobile");
+		// Which is the connectivity at the moment
+		var networkState = navigator.connection.type;
+
+		var states = {};
+		states[Connection.UNKNOWN]  = 'Unknown connection';
+		states[Connection.ETHERNET] = 'Ethernet connection';
+		states[Connection.WIFI]     = 'WiFi connection';
+		states[Connection.CELL_2G]  = 'Cell 2G connection';
+		states[Connection.CELL_3G]  = 'Cell 3G connection';
+		states[Connection.CELL_4G]  = 'Cell 4G connection';
+		states[Connection.CELL]     = 'Cell generic connection';
+		states[Connection.NONE]     = 'No network connection';
+
+		if(checkFor == false){
+			checkFor = Connection.NONE;
+		}
+
+		// Lets see if I have what you need
+		if(states[networkState] == checkFor){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	else{
+		console.log("I am on a desktop, I can't really tell");
+		return true;
+	}
+
+	// Just in case
+	return false;
+}
+
 function sendMail(){
+
 	console.log("Sending an email");
 	console.log($('#myName').val());
+
+	if(checkConnection(states[Connection.NONE])){
+		console.log("No connectivity");
+		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		return false;
+	}
+
 	$.ajax({
 		type: 'POST',
 		url: 'http://app.lasangha.org/mailer.php',
@@ -365,9 +424,16 @@ function setId(newSessionId){
 
 // Add meditation times to the causes
 function addToCause(time){
+
+	if(checkConnection(states[Connection.NONE])){
+		console.log("No connectivity");
+		//alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		return false;
+	}
+
 	$.ajax({
 		type: 'POST',
-	url: 'http://localhost/bhavana/api.php',
+	url: apiPath,
 	dataType: "json",
 	data: {
 		what: "addToCause",
@@ -380,5 +446,73 @@ function addToCause(time){
 		console.log(data)
 	}
 	});
+}
+
+// I should be able to get a file path
+// Not really working
+function getFile(file){
+	console.log("Loading a file?");
+	var reader = new FileReader();
+	reader.onloadend = function (evt) {
+		console.log("read success");
+		console.log(evt.target.result);
+	};
+	reader.readAsDataURL(file);
+}
+
+function playAudio(id) {
+	var audioElement = document.getElementById(id);
+	var url = audioElement.getAttribute('src');
+	console.log("Playing this: " + url);
+
+	// The path must be updated in case of mobile cases
+	url = adjustPaths(url);
+
+	console.log(">>>>>" + cordova.file.applicationDirectory + '/www/audio/bell_2.mp3');
+	var my_media = new Media(url,
+			// success callback
+			function () { console.log("playAudio():Audio Success"); },
+			// error callback
+			function (err) { console.log("playAudio():Audio Error: " + JSON.stringify(err)); }
+			);
+	// Play audio
+	my_media.play();
+}
+
+function adjustPaths(url){
+
+	// I need to test this on other platforms
+	if(device.platform.toLowerCase() === "android"){
+		console.log("Running on android");
+		url = cordova.file.applicationDirectory + url;
+	}
+
+	return url;
+
+}
+
+// I retrieve the medatitation times for each cause
+function getMeditationCausesTimes(){
+	if(checkConnection(false)){
+		return false;
+	}
+	else{
+		//Lets make the connection
+		$.ajax({
+			type: 'POST',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "addToCause",
+		causeCode: $('#cause').val(),
+		totalTime: time,
+		where: getKey("myCountry", "Nibbana"),
+		who: "me"
+		},
+		success: function (data) {
+			console.log(data)
+		}
+		});
+	}
 }
 

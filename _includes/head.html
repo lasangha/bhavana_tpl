@@ -20,6 +20,29 @@
 <script src="js/fortoday.js"></script>
 <script src="js/bhavana.js"></script>
 
+<script>
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+	//alert("uno");
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
+	//window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory + "/www/audio/bell_1.ogg", onResolveSuccess, fail);
+	console.log(cordova.file.applicationDirectory);
+}
+
+function onFileSystemSuccess(fileSystem) {
+	console.log("Filesystem Success!!!" + fileSystem.name + " >> " + fileSystem.root.name);
+}
+
+function onResolveSuccess(fileEntry) {
+	console.log("Found the file!!!" + fileEntry.name);
+}
+
+function fail(error) {
+	console.log("error :(" + error.code);
+}
+
+</script>
+
 <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 </head>
 <!-- end of head -->
