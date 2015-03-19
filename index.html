@@ -14,14 +14,16 @@ title: Bhavana
 	</div>
 </div>
 
+<div id="meditationTimes">
+	Hemos meditado <span id="causesTotalMinutes">#</span> minutos por <span id="causesCause">#</span>
+</div>
+
 <nav data-role="navbar">
 	<ul>
 		<li>
 		<a href="#" onClick="gotoLastPage()" class="ui-btn ui-shadow ui-icon-forward ui-btn-inline ui-btn-icon-left ui-shadow-icon" data-ajax="false">Ir al Curso</a>
 		</li>
-
 		<li>
-
 		<a href="i_basics.html" class="ui-btn ui-shadow ui-icon-info ui-btn-inline ui-btn-icon-left ui-shadow-icon">Introducción</a>
 		</li>
 	</ul>
@@ -37,7 +39,7 @@ title: Bhavana
 $(document).ready(function($){
 		console.log("Creating subject");
 		createSubject();
-		getMeditationCausesTimes();
+		getMeditationMaxCauseTime();
 		});
 </script>
 

@@ -4,7 +4,8 @@ email: lasanghacr@yahoo.com
 description: Aprenda a meditar y tome control de sus reacciones
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://192.168.43.168" # the base hostname & protocol for your site
-destination: /var/www/bhavana/www #../app/www
+#destination: /var/www/html/bhavana/www
+destination: ../app/www
 include: [fonts, res, img, audio]
 # Build settings
 markdown: kramdown

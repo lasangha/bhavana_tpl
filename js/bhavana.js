@@ -1,12 +1,34 @@
-// I'm i running in a mobile device?
-var mobile = false;
+//
+// Some stuff that should be loaded if I am running from the app, this is not automatic, I change this if I am compiling for it
+// 
+// I'm I running from the app?
+var onApp = false;
 
-/*
-if(device.platform.toLowerCase() === "android"){
-	console.log("I am running on a mobile device");
+//
+// I'm i running in a mobile device?
+// Not really using it now
+//
+var mobile = false;
+var os = navigator.appVersion;
+os = os.toLowerCase();
+
+if(runningOnMobile()){
 	mobile = true;
 }
-*/
+
+function runningOnMobile(){
+
+	console.log("I'm I running on mobile?");
+
+	if(strpos(os, 'android', 0) > 0){
+		return true;
+	}
+	if(strpos(os, 'iphone', 0) > 0){
+		return true;
+	}
+	return false;
+
+}
 
 // Conection states
 var thisPage = window.URL;
@@ -14,7 +36,7 @@ var lastPage = "";
 
 var sessionId = 0;
 
-var apiPath = "http://192.168.43.164/bhavana/api.php";
+var apiPath = "http://192.168.43.164/bhavana/api/api.php";
 
 function getConnectionType(){
 
@@ -31,7 +53,7 @@ function getConnectionType(){
 		console.log("I will assume is a desktop");
 		return "desktop";
 	}
-	
+
 }
 
 // I check for connectivity, you should ask for the type of connection you want to check for,
@@ -174,7 +196,7 @@ function hidePlayer(){
 		console.log("I am showing the player ?");
 		$("#myPlayer").show();
 		$('audio').each(function(){
-			this.currentTime = 0; // Reset time
+			//this.currentTime = 0; // Reset time
 			this.play(); // Stop playing
 		});
 
@@ -255,7 +277,9 @@ function storeThisPage(){
 
 // Save user settings
 function saveMySettings(){
+
 	console.log("Saving settings");
+
 	if($("#meditateWithThemAll").is(":checked") == true){
 		console.log("I want to meditate with them all....");
 		storeKey("meditateWithThemAll", true);
@@ -267,14 +291,34 @@ function saveMySettings(){
 	// Country
 	if($("#country").val() != ""){
 		console.log("I live somewhere");
-		storeKey("myCountry", $("#country"));
+		storeKey("myCountry", $("#country").val());
 	}else{
 		removeKey("myCountry");
 		console.log("I live nowhere");
 	}
 
+	// email
+	if($("#email").val() != ""){
+		console.log("I have an email");
+		storeKey("myEmail", $("#email").val());
+	}else{
+		removeKey("myEmail");
+		console.log("I have no email");
+	}
+
+	// pwd
+	if($("#pwd").val() != ""){
+		console.log("I have a password");
+		storeKey("myPwd", $("#pwd").val());
+	}else{
+		removeKey("myPwd");
+		console.log("I have no pwd");
+	}
+
 	alert("Muchas gracias!");
+
 	return false;
+
 }
 // Load them in the settings form
 function loadMySettings(){
@@ -456,19 +500,72 @@ function addToCause(time){
 
 	$.ajax({
 		type: 'POST',
-	url: apiPath,
-	dataType: "json",
-	data: {
-		what: "addToCause",
-	causeCode: $('#cause').val(),
-	totalTime: time,
-	where: getKey("myCountry", "Nibbana"),
-	who: "me"
-	},
-	success: function (data) {
-		console.log(data)
-	}
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "addToCause",
+		causeCode: $('#cause').val(),
+		totalTime: time,
+		where: getKey("myCountry", "Nibbana"),
+		email: getKey("myEmail", "buddha@lasangha.org")
+		},
+		success: function (data) {
+			console.log(data)
+		}
 	});
+}
+
+function createChart(chartTitle, canvasId, chartLabels, chartData, type){
+
+	console.log("Creating chart");
+
+	var lineChartData = {
+		labels : chartLabels,
+		datasets : [
+		{
+			label: chartTitle,
+			fillColor : "rgba(220,220,220,0.2)",
+			strokeColor : "rgba(220,220,220,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			pointHighlightFill : "#fff",
+			pointHighlightStroke : "rgba(220,220,220,1)",
+			data : chartData
+		}
+		]
+	}
+	var ctx = document.getElementById(canvasId).getContext("2d");
+	window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true});
+
+}
+
+// Get my meditation times per day
+function getMyMeditationTimesPerDay(){
+
+	if(checkConnection(false) == false){
+		console.log("No connectivity");
+		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		return false;
+	}
+
+	console.log("There is connexion, lets get the times");
+
+	$.ajax({
+		type: 'GET',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "getMyMeditationTimes",
+		causeCode: $('#cause').val(),
+		ini: 7, //Start 7 days ago
+		email: getKey("myEmail", "buddha@lasangha.org")
+		},
+		success: function (details) {
+			createChart("Meditación por día", "myChart", details.labels, details.times, 'lines');
+			console.log("Esta es la data" + details.times);
+		}
+	});
+
 }
 
 // I should be able to get a file path
@@ -514,6 +611,40 @@ function adjustPaths(url){
 
 }
 
+// I retrieve the medatitation with most meditated time
+function getMeditationMaxCauseTime(){
+
+	console.log("I will get the cause with more minutes meditated");
+
+	if(checkConnection() == true){
+		console.log("Getting times");
+
+		//Lets make the connection
+		$.ajax({
+			type: 'GET',
+			url: apiPath,
+			dataType: "json",
+			data: {
+				what: "getCausesTimesMax",
+			},
+			success: function (data) {
+				$("#causesTotalMinutes").html(data.totalTime);
+				$("#causesCause").html(data.name);
+				console.log("Got:" + JSON.stringify(data));
+				console.log(data.totalTime)
+			},
+			fail: function(){
+				console.log("Something wrong?");
+			}
+		});
+	}
+	else{
+		console.log("Unable to get meditation causes");
+		return false;
+
+	}
+
+}
 // I retrieve the medatitation times for each cause
 function getMeditationCausesTimes(){
 
@@ -525,14 +656,14 @@ function getMeditationCausesTimes(){
 		//Lets make the connection
 		$.ajax({
 			type: 'GET',
-		url: apiPath,
-		dataType: "json",
-		data: {
-			what: "getCausesTimes",
-		},
-		success: function (data) {
-			console.log(data)
-		},
+			url: apiPath,
+			dataType: "json",
+			data: {
+				what: "getCausesTimes",
+			},
+			success: function (data) {
+				console.log(data)
+			},
 			fail: function(){
 				console.log("Something wrong?");
 			}

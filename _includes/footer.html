@@ -3,17 +3,39 @@
 	<nav data-role="navbar">
 		<ul>
 			<li><a href="about.html" data-icon="info">Acerca de</a></li>
-			<li><a href="contact.html" data-icon="mail">Contacto</a></li>
+			<li><a href="myStats.html" data-icon="info">Estadísticas</a></li>
+			<li><a href="contact.html" data-icon="mail">Apoyo</a></li>
 			<li><a href="preferences.html" data-icon="gear">Configuración</a></li>
 			<li><a href="timer.html" data-icon="clock">Meditar</a></li>
 		</ul>
 	</nav>
 </footer>
 
-<script type="text/javascript" src="cordova.js"></script>
-<script type="text/javascript" src="js/index.js"></script>
+<!--script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script-->
+
 <script type="text/javascript">
-	app.initialize();
-	storeThisPage();
+
+// Store the current page for later viewing
+storeThisPage();
+
+if(onApp){
+	$.getScript("cordovajs", function(data, textStatus, jqxhr) {
+			console.log(data); //data returned
+			console.log(textStatus); //success
+			console.log(jqxhr.status); //200
+			console.log('Load was performed.');
+			// Load the index if cordova was imported
+			$.getScript("js/index.js", function(data, textStatus, jqxhr) {
+				console.log(data); //data returned
+				console.log(textStatus); //success
+				console.log(jqxhr.status); //200
+				console.log('Load was performed.');
+				// Initialize the app
+				app.initialize();
+				});
+			});
+}
+
 </script>
 
