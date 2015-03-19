@@ -1,10 +1,9 @@
 ---
 layout: default
 id: index
-title: Estadísticas
+title: Meditaciones grupales
 ---
-<h2>Mi meditación diaria</h2>
-
+<h2>En grupo meditamos mejor</h2>
 <div id="charts">
 	<canvas id="myChart" height="200" width="400"></canvas>	
 </div>
@@ -12,5 +11,8 @@ title: Estadísticas
 <script src="js/Chart.min.js"></script>
 
 <script>
-	$(document).on('pageinit','[data-role=page]',getMyMeditationTimesPerDay);
+
+	$(document).on('pageinit','[data-role=page]',getAllMeditationTimesPerDay);
+
 </script>
+

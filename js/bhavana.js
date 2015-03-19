@@ -539,6 +539,32 @@ function createChart(chartTitle, canvasId, chartLabels, chartData, type){
 
 }
 
+// Get all meditation times per day
+function getAllMeditationTimesPerDay(){
+
+	if(checkConnection(false) == false){
+		console.log("No connectivity");
+		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		return false;
+	}
+
+	console.log("There is connexion, lets get the times");
+
+	$.ajax({
+		type: 'GET',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "getAllMeditationTimesPerDay",
+			ini: 7, //Start 7 days ago
+		},
+		success: function (details) {
+			createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
+		}
+	});
+
+}
+
 // Get my meditation times per day
 function getMyMeditationTimesPerDay(){
 
@@ -556,9 +582,8 @@ function getMyMeditationTimesPerDay(){
 		dataType: "json",
 		data: {
 			what: "getMyMeditationTimes",
-		causeCode: $('#cause').val(),
-		ini: 7, //Start 7 days ago
-		email: getKey("myEmail", "buddha@lasangha.org")
+			ini: 7, //Start 7 days ago
+			email: getKey("myEmail", "buddha@lasangha.org")
 		},
 		success: function (details) {
 			createChart("Meditación por día", "myChart", details.labels, details.times, 'lines');
