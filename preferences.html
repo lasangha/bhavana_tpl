@@ -1,84 +1,36 @@
 ---
 layout: default
 id: index
-title: Bhavana
+title: Configuración
 ---
 
-<div data-role="tabs" id="tabs">
-	<div data-role="navbar">
-		<ul>
-			<li><a href="#config" data-ajax="false">Configuración</a></li>
-			<li><a href="#newPwd" data-ajax="false">Nueva contraseña</a></li>
-		</ul>
-	</div>
-	<div id="config" class="ui-body-d ui-content">
-		<h2>Datos de la cuenta</h2>
-		<p>Si ya tiene una cuenta, ingrese los datos aquí.</a>
+<h2>Datos de la cuenta</h2>
+	<p></p>
 		<form>
-			<!--div class="ui-field-contain">
-		<fieldset data-role="controlgroup">
-			<legend>Quiero participar en las meditaciones globales</legend>
-			<label for="meditateWithThemAll">Si claro!</label>
-			<input name="meditateWithThemAll" id="meditateWithThemAll" type="checkbox">
-		</fieldset>
-		<p>Cada vez que usted medita se guardará un registro del tiempo de meditación. La información es anónima, cada vez que usted medita se envía el tiempo total y la intención escogida, con esto podemos meditar en grupo.</p>
-	</div-->
-			<div class="ui-field-contain">
-				<label for="country">Nombre</label>
-				<br />
-				<input type="text" id="name" name="name" placeholder="">
-			</div>
-			<div class="ui-field-contain">
-				<label for="country">Correo electrónico</label>
-				<br />
-				<input type="email" id="email" name="email" placeholder="">
-			</div>
-			<div class="ui-field-contain">
-				<label for="country">¿En que país vive?</label>
-				<br />
-				<input type="text" id="country" name="country" placeholder="El mundo">
-			</div>
-			<div class="ui-field-contain">
-				<label for="country">Clave de acceso</label>
-				<br />
-				<input type="text" id="pwd" name="pwd" placeholder="Algo sencillo y fácil de recordar">
-			</div>
-
-			<input type="submit" onClick="return saveMySettings();" value="Guardar!">
-
-		</form>
-
-	</div>
-	<div id="newPwd">
-		<h2>Recuperar contraseña</h2>
-		<p>Si no recuerda su contraseña, indique su correo electrónico y se le enviará una nueva.</a>
-		<h3>Paso 1:</h3>
-		<p>Indique su correo electrónico y se le enviará una nueva clave temporal</p>
-		<form>
-			<div class="ui-field-contain">
-				<label for="country">Correo electrónico</label>
-				<br />
-				<input type="email" id="emailRecovery" name="emailRecovery">
-			</div>
-
-			<input type="submit" onClick="return getNewPwd();" value="Solicitar nueva clave">
-
-		</form>
-
-		<form>
-			<h3>Paso 2:</h3>
-			<p>Indique aquí su clave temporal para poder volver iniciar la sesión</p>
-
-			<div class="ui-field-contain">
-				<label for="country">Clave Temporal</label>
-				<br />
-				<input type="text" id="tmpPwd" name="tmpPwd">
-			</div>
-			<input type="submit" onClick="return setTmpPwd();" value="Probar clave temporal">
-		</form>
-
-	</div>
+<div class="ui-field-contain">
+	<label for="country">Nombre</label>
+	<br />
+	<input type="text" id="name" name="name" placeholder="">
 </div>
+<div class="ui-field-contain">
+	<label for="country">Correo electrónico</label>
+	<br />
+	<input type="email" id="email" name="email" placeholder="">
+</div>
+<div class="ui-field-contain">
+	<label for="country">¿En que país vive?</label>
+	<br />
+	<input type="text" id="country" name="country" placeholder="El mundo">
+</div>
+<div class="ui-field-contain">
+	<label for="country">Clave de acceso</label>
+	<br />
+	<input type="text" id="pwd" name="pwd" placeholder="Algo sencillo y fácil de recordar">
+</div>
+
+<input type="submit" onClick="return saveMySettings();" value="Crear Cuenta">
+
+		</form>
 
 <script>
 loadMySettings();

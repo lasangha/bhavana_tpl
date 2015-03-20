@@ -4,30 +4,26 @@ id: index
 title: Bhavana
 ---
 
+<br />
 <div class="ui-corner-all custom-corners">
 	<div class="ui-bar ui-bar-a">
-		<h2>Meditación para la vida diaria</h2>
+		<p>Un retiro personal de meditación</p>
 	</div>
-	<div class="ui-body ui-body-a">
-	<h3 class="ui-bar ui-bar-a ui-corner-all">Para hoy: <span id="forTodaySubject"></span></h3>
-		<p>Aprenda a meditar y tome control de sus reacciones, gratis, por siempre.</p>
-	</div>
-</div>
-
-<div id="meditationTimes">
+	<div class="ui-body ui-body-a" align="center">
 	Hemos meditado <span id="causesTotalMinutes">#</span> minutos por <span id="causesCause">#</span>
+	</div>
 </div>
-
-<nav data-role="navbar">
-	<ul>
-		<li>
-		<a href="#" onClick="gotoLastPage()" class="ui-btn ui-shadow ui-icon-forward ui-btn-inline ui-btn-icon-left ui-shadow-icon" data-ajax="false">Ir al Curso</a>
-		</li>
-		<li>
-		<a href="i_basics.html" class="ui-btn ui-shadow ui-icon-info ui-btn-inline ui-btn-icon-left ui-shadow-icon">Introducción</a>
-		</li>
-	</ul>
-</nav>
+<br />
+<ul data-role="listview" data-inset="true">
+	<li><a href="#" onClick="gotoLastPage()" data-ajax="false">Ir al Curso</a></li>
+	<li><a href="i_basics.html" data-ajax="false">Introducción</a></li>
+</ul>
+<br />
+<ul data-role="listview" data-inset="true">
+	<li><a href="myStats.html"     data-ajax="false">Mis estadísticas de meditación</a></li>
+	<li><a href="groupStats.html"  data-ajax="false">Estadísticas grupales de meditación</a></li>
+	<li><a href="preferences.html" data-ajax="false">Configuración</a></li>
+</ul>
 
 <div align="center" id="companyLogo">
 	<p><img src="img/logo_sangha.png" style="width: 250px"></p>
@@ -37,8 +33,6 @@ title: Bhavana
 
 <script>
 $(document).ready(function($){
-		console.log("Creating subject");
-		createSubject();
 		getMeditationMaxCauseTime();
 		});
 </script>

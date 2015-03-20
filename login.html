@@ -1,0 +1,64 @@
+---
+layout: default
+id: index
+title: Ingresar a la cuenta
+---
+
+<div data-role="tabs" id="tabs">
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#login" data-ajax="false">Ingresar</a></li>
+			<li><a href="#newPwd" data-ajax="false">Recordar Contraseña</a></li>
+		</ul>
+	</div>
+
+	<div id="login" class="ui-body-d ui-content">
+		<h2>Ingresar a su cuenta</h2>
+		<p>Si ya tiene una cuenta, ingrese los datos aquí. O también puede <a href="preferences.html" data-ajax="false">Crear una nueva cuenta aquí</a>
+		</p>
+	<form>
+		<div class="ui-field-contain">
+			<label for="country">Correo electrónico</label>
+			<br />
+			<input type="email" id="email" name="email" placeholder="">
+		</div>
+		<div class="ui-field-contain">
+			<label for="country">Clave de acceso</label>
+			<br />
+			<input type="text" id="pwd" name="pwd">
+		</div>
+
+		<input type="submit" onClick="return logMeIn();" value="Ingresar">
+	</form>
+</div>
+
+<div id="newPwd" class="ui-body-d ui-content">
+	<h2>Recuperar contraseña</h2>
+	<p>Si no recuerda su contraseña, indique su correo electrónico y se le enviará una nueva.</a>
+<h3>Paso 1:</h3>
+<p>Indique su correo electrónico y se le enviará una nueva clave temporal</p>
+<form>
+	<div class="ui-field-contain">
+		<label for="country">Correo electrónico</label>
+		<br />
+		<input type="email" id="emailRecovery" name="emailRecovery">
+	</div>
+
+	<input type="submit" onClick="return getNewPwd();" value="Solicitar nueva clave">
+
+</form>
+
+<form>
+	<h3>Paso 2:</h3>
+	<p>Indique aquí su clave temporal para poder volver iniciar la sesión</p>
+
+	<div class="ui-field-contain">
+		<label for="country">Clave Temporal</label>
+		<br />
+		<input type="text" id="tmpPwd" name="tmpPwd">
+	</div>
+	<input type="submit" onClick="return setTmpPwd();" value="Probar clave temporal">
+</form>
+
+	</div>
+</div>

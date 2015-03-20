@@ -9,10 +9,10 @@ function checkLogin(){
     var url = window.location.pathname;
     var filename = url.substring(url.lastIndexOf('/')+1);
 	console.log("Checking login: " + filename);
-	if(filename != "preferences.html" && filename != "index2.html"){
+	if(filename != "login.html"){
 	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
 		console.log("User is not logged in");
-		$(location).attr('href',"preferences.html");
+		$(location).attr('href',"login.html");
 	}
 	}
 }
@@ -295,7 +295,30 @@ function storeThisPage(){
 }
 
 // Save user settings
-function saveMySettings(){
+function saveMySettings(name, email, pwd, country){
+
+	console.log("Saving settings");
+
+	// Name
+	console.log("I have a name");
+	storeKey("myName", name);
+
+	// Country
+	console.log("I live somewhere");
+	storeKey("myCountry", country);
+
+	// email
+	console.log("I have an email");
+	storeKey("myEmail", email);
+
+	// pwd
+	console.log("I have a password");
+	storeKey("myPwd", pwd);
+
+}
+
+// Save user settings
+function saveMySettingsForm(){
 
 	console.log("Saving settings");
 
@@ -370,19 +393,22 @@ function logMeIn(callMe){
 		dataType: "json",
 		data: {
 			what: "logUserIn",
-			email: getKey("myEmail", "buddha@lasangha.org"),
-			pwd: getKey("myPwd", "1234567890!")
+			email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
+			pwd: $("#pwd").val() //getKey("myPwd", "1234567890!")
 		},
 		success: function (data) {
 			console.log("Response is:" + data);
-			if(data == "1"){
+			if(data.idUser > 0){
 				console.log("User exists, I was able to login");
+				saveMySettings(data.name, data.email, $("#pwd").val(), data.country);
 				alert("Muchas gracias :)");
+				$(location).attr('href',"index.html");
 				return true;
 			}
 			else if(data == "2"){
-				console.log("User does not exist, I will try to create the user");
-				callMe();
+				//console.log("User does not exist, I will try to create the user");
+				//callMe();
+				alert("No existe un usuario registrado con ese correo electrónico");
 			}
 			else if(data == "0"){
 				console.log("Wrong password, but the user exists");
@@ -391,7 +417,7 @@ function logMeIn(callMe){
 
 		}
 	});
-
+	return false;
 }
 
 // I register users
@@ -621,24 +647,31 @@ function createChart(chartTitle, canvasId, chartLabels, chartData, type){
 
 	console.log("Creating chart");
 
-	var lineChartData = {
-		labels : chartLabels,
-		datasets : [
-		{
-			label: chartTitle,
-			fillColor : "rgba(220,220,220,0.2)",
-			strokeColor : "rgba(220,220,220,1)",
-			pointColor : "rgba(220,220,220,1)",
-			pointStrokeColor : "#fff",
-			pointHighlightFill : "#fff",
-			pointHighlightStroke : "rgba(220,220,220,1)",
-			data : chartData
-		}
-		]
-	}
-	var ctx = document.getElementById(canvasId).getContext("2d");
-	window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true});
+	console.log("hello >>>> " + chartLabels.length);
 
+	if(chartLabels.length == 0){
+		$("#myCharts").html("No hay datos en este momento");
+	}else{
+
+		var lineChartData = {
+			labels : chartLabels,
+			datasets : [
+			{
+				label: chartTitle,
+				fillColor : "rgba(220,220,220,0.2)",
+				strokeColor : "rgba(220,220,220,1)",
+				pointColor : "rgba(220,220,220,1)",
+				pointStrokeColor : "#fff",
+				pointHighlightFill : "#fff",
+				pointHighlightStroke : "rgba(220,220,220,1)",
+				data : chartData
+			}
+			]
+		}
+
+		var ctx = document.getElementById(canvasId).getContext("2d");
+		window.myLine = new Chart(ctx).Line(lineChartData, {responsive: true});
+	}
 }
 
 // Get all meditation times per day
@@ -658,7 +691,7 @@ function getAllMeditationTimesPerDay(){
 		dataType: "json",
 		data: {
 			what: "getAllMeditationTimesPerDay",
-			ini: 7, //Start 7 days ago
+		ini: 7, //Start 7 days ago
 		},
 		success: function (details) {
 			createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
@@ -684,12 +717,12 @@ function getMyMeditationTimesPerDay(){
 		dataType: "json",
 		data: {
 			what: "getMyMeditationTimes",
-			ini: 7, //Start 7 days ago
-			email: getKey("myEmail", "buddha@lasangha.org")
+		ini: 7, //Start 7 days ago
+		email: getKey("myEmail", "buddha@lasangha.org")
 		},
 		success: function (details) {
 			createChart("Meditación por día", "myChart", details.labels, details.times, 'lines');
-			console.log("Esta es la data" + details.times);
+			//console.log("Esta es la data" + details.times);
 		}
 	});
 
@@ -803,4 +836,5 @@ function getMeditationCausesTimes(){
 	}
 	console.log("Done macarron");
 }
+
 
