@@ -9,7 +9,7 @@ function checkLogin(){
     var url = window.location.pathname;
     var filename = url.substring(url.lastIndexOf('/')+1);
 	console.log("Checking login: " + filename);
-	if(filename != "login.html"){
+	if(filename != "login.html" && filename != "preferences.html"){
 	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
 		console.log("User is not logged in");
 		$(location).attr('href',"login.html");
@@ -115,6 +115,11 @@ function checkConnection() {
 
 	// Just in case
 	return false;
+}
+
+// I will redirect somewhere
+function iGoTo(goTo){
+	$(location).attr('href',goTo);
 }
 
 function sendMail(){
@@ -322,60 +327,20 @@ function saveMySettingsForm(){
 
 	console.log("Saving settings");
 
-	if($("#meditateWithThemAll").is(":checked") == true){
-		console.log("I want to meditate with them all....");
-		storeKey("meditateWithThemAll", true);
-	}else{
-		storeKey("meditateWithThemAll", false);
-		console.log("I will not meditate with them all!");
-	}
-
-	// Name
-	if($("#name").val() != ""){
-		console.log("I have a name");
-		storeKey("myName", $("#name").val());
-	}else{
-		removeKey("myName");
-		console.log("I have no name");
-	}
-
-	// Country
-	if($("#country").val() != ""){
-		console.log("I live somewhere");
-		storeKey("myCountry", $("#country").val());
-	}else{
-		removeKey("myCountry");
-		console.log("I live nowhere");
-	}
-
-	// email
-	if($("#email").val() != ""){
-		console.log("I have an email");
-		storeKey("myEmail", $("#email").val());
-	}else{
-		removeKey("myEmail");
-		console.log("I have no email");
-	}
-
-	// pwd
-	if($("#pwd").val() != ""){
-		console.log("I have a password");
-		storeKey("myPwd", $("#pwd").val());
-	}else{
-		removeKey("myPwd");
-		console.log("I have no pwd");
-	}
-
-	var exists = logMeIn(registerMe);
-
-	/*
-	if(exists == false){
+	// If this is a new account, I will first try to register the user
+	if(getKey("registering", "false")){
 		registerMe();
 	}
-	*/
+	else{
+		_saveMySettings();
+	}
 
 	return false;
+}
 
+// Helper function to save settings located in the form
+function _saveMySettings(){
+		saveMySettings($("#name").val(), $("#email").val(), $("#pwd").val(),$("#country").val());
 }
 
 function wrongPassword(){
@@ -393,8 +358,8 @@ function logMeIn(callMe){
 		dataType: "json",
 		data: {
 			what: "logUserIn",
-			email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
-			pwd: $("#pwd").val() //getKey("myPwd", "1234567890!")
+			email: $("#email").val(),
+			pwd: $("#pwd").val()
 		},
 		success: function (data) {
 			console.log("Response is:" + data);
@@ -406,8 +371,6 @@ function logMeIn(callMe){
 				return true;
 			}
 			else if(data == "2"){
-				//console.log("User does not exist, I will try to create the user");
-				//callMe();
 				alert("No existe un usuario registrado con ese correo electrónico");
 			}
 			else if(data == "0"){
@@ -418,6 +381,49 @@ function logMeIn(callMe){
 		}
 	});
 	return false;
+}
+
+// Update user details after they where changed in the form
+function updateUserDets(){
+
+	$.ajax({
+		type: 'POST',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "updateUser",
+			name: getKey("myName", "Ananda"),
+			email: getKey("myEmail", "buddha@lasangha.org"),
+			pwd: getKey("myPwd", "1234567890!"),
+			newPwd: $("#pwd").val(),
+			country: getKey("myCountry", "Nibbana")
+		},
+		success: function (data) {
+			console.log("Response is: " + data);
+			if(data == 1){
+				_saveMySettings();
+				alert("Datos actualizados");
+				return true;
+			}
+			else if(data == 0){
+				alert("La clave actual es incorrecta");
+				return false;
+			}
+		}
+	});
+}
+
+// I log you out
+function logOut(){
+	var keys = ['myName', 'myPwd', 'myCountry', 'myPwd', 'myEmail'];
+
+	for(i = 0; i < 5; i++){
+		console.log("removing" + keys[i]);
+		removeKey(keys[i]);
+	}
+
+	alert("Hasta luego :)");
+	iGoTo("index.html");
 }
 
 // I register users
@@ -431,29 +437,49 @@ function registerMe(){
 		dataType: "json",
 		data: {
 			what: "addUser",
-			name: getKey("myName", "Ananda"),
-			email: getKey("myEmail", "buddha@lasangha.org"),
-			pwd: getKey("myPwd", "1234567890!"),
-			country: getKey("myCountry", "Nibbana")
+			name: $("#name").val(), //getKey("myName", "Ananda"),
+			email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
+			pwd: $("#pwd").val(), //getKey("myPwd", "1234567890!"),
+			country: $("#countr").val(), //getKey("myCountry", "Nibbana")
 		},
 		success: function (data) {
-			alert("Gracias, el usuario ha sido creado.");
-			console.log(data)
+			console.log("Response is: " + data);
+			if(data == 1){
+				_saveMySettings();
+				removeKey("registering");
+				alert("Gracias, el usuario ha sido creado.");
+				iGoTo("index.html");
+				return true;
+			}
+			else if(data == 0){
+				alert("Ya existe alguien registrado con ese correo electrónico");
+				return false;
+			}
 		}
 	});
+
+	return false;
 
 }
 
 // Load them in the settings form
 function loadMySettings(){
 	console.log("Loading settings");
-	if(getKey("meditateWithThemAll", true) == 'true'){
-		console.log("I will participate with the global meditations");
-		$("#meditateWithThemAll").attr("checked", true);
-	}else{
-		console.log("Uncheking the meditation with them all");
-		$("#meditateWithThemAll").attr("checked", false);
+
+	/*
+	   if(getKey("meditateWithThemAll", true) == 'true'){
+	   console.log("I will participate with the global meditations");
+	   $("#meditateWithThemAll").attr("checked", true);
+	   }else{
+	   console.log("Uncheking the meditation with them all");
+	   $("#meditateWithThemAll").attr("checked", false);
+	   }*/
+
+	// Is this a new user?
+	if(getKey("myName", "buddha") == "buddha"){
+		storeKey("registering", "true");
 	}
+
 	$("#name").val(getKey("myName", ""));
 	$("#email").val(getKey("myEmail", ""));
 	$("#country").val(getKey("myCountry", ""));
