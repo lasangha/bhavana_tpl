@@ -67,7 +67,7 @@ function createSubject(){
 	subjects = getSubjects();
 	console.log(subjects[dayOfTheMonth]);
 	$("#forTodaySubject").html(subjects[dayOfTheMonth]);
-	//$("#todoForToday").html(todoForToday[dayOfTheMonth]);
+	$("#todoForToday").html(todoForToday[dayOfTheMonth]);
 	//console.log("Image is: " + "img/forToday/"+dayOfTheMonth+".jpg");
 	//$("#todaysImage").attr("src", "img/forToday/"+dayOfTheMonth+".jpg");
 

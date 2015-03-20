@@ -8,7 +8,8 @@ function checkLogin(){
 	console.log("Checking login");
     var url = window.location.pathname;
     var filename = url.substring(url.lastIndexOf('/')+1);
-	if(filename != "preferences.html"){
+	console.log("Checking login: " + filename);
+	if(filename != "preferences.html" && filename != "index2.html"){
 	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
 		console.log("User is not logged in");
 		$(location).attr('href',"preferences.html");
