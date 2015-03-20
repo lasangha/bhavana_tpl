@@ -1,4 +1,22 @@
 //
+// The user must be logged in in order to use the application
+//
+
+//checkLogin();
+// I check if the user is logged in
+function checkLogin(){
+	console.log("Checking login");
+    var url = window.location.pathname;
+    var filename = url.substring(url.lastIndexOf('/')+1);
+	if(filename != "preferences.html"){
+	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
+		console.log("User is not logged in");
+		$(location).attr('href',"preferences.html");
+	}
+	}
+}
+
+//
 // Some stuff that should be loaded if I am running from the app, this is not automatic, I change this if I am compiling for it
 // 
 // I'm I running from the app?
@@ -288,6 +306,15 @@ function saveMySettings(){
 		console.log("I will not meditate with them all!");
 	}
 
+	// Name
+	if($("#name").val() != ""){
+		console.log("I have a name");
+		storeKey("myName", $("#name").val());
+	}else{
+		removeKey("myName");
+		console.log("I have no name");
+	}
+
 	// Country
 	if($("#country").val() != ""){
 		console.log("I live somewhere");
@@ -315,11 +342,81 @@ function saveMySettings(){
 		console.log("I have no pwd");
 	}
 
-	alert("Muchas gracias!");
+	var exists = logMeIn(registerMe);
+
+	/*
+	if(exists == false){
+		registerMe();
+	}
+	*/
 
 	return false;
 
 }
+
+function wrongPassword(){
+	alert("Lo siento, pero esa contraseña no es correcta.");
+}
+
+// I log the account in
+function logMeIn(callMe){
+
+	console.log("Logging in the user");
+
+	$.ajax({
+		type: 'POST',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "logUserIn",
+			email: getKey("myEmail", "buddha@lasangha.org"),
+			pwd: getKey("myPwd", "1234567890!")
+		},
+		success: function (data) {
+			console.log("Response is:" + data);
+			if(data == "1"){
+				console.log("User exists, I was able to login");
+				alert("Muchas gracias :)");
+				return true;
+			}
+			else if(data == "2"){
+				console.log("User does not exist, I will try to create the user");
+				callMe();
+			}
+			else if(data == "0"){
+				console.log("Wrong password, but the user exists");
+				wrongPassword();
+			}
+
+		}
+	});
+
+}
+
+// I register users
+function registerMe(){
+
+	console.log("Registering new user");
+
+	$.ajax({
+		type: 'POST',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "addUser",
+			name: getKey("myName", "Ananda"),
+			email: getKey("myEmail", "buddha@lasangha.org"),
+			pwd: getKey("myPwd", "1234567890!"),
+			country: getKey("myCountry", "Nibbana")
+		},
+		success: function (data) {
+			alert("Gracias, el usuario ha sido creado.");
+			console.log(data)
+		}
+	});
+
+}
+
 // Load them in the settings form
 function loadMySettings(){
 	console.log("Loading settings");
@@ -330,6 +427,10 @@ function loadMySettings(){
 		console.log("Uncheking the meditation with them all");
 		$("#meditateWithThemAll").attr("checked", false);
 	}
+	$("#name").val(getKey("myName", ""));
+	$("#email").val(getKey("myEmail", ""));
+	$("#country").val(getKey("myCountry", ""));
+
 	return false;
 }
 
