@@ -3,7 +3,7 @@ title: Bhavana
 email: lasanghacr@yahoo.com
 description: Su retiro personal...
 baseurl: "" # the subpath of your site, e.g. /blog/
-destination: ../appV2/www #out
+destination: ../app/www
 url: "http://lasangha.org" # the base hostname & protocol for your site
 include: [audio, img, js, css]
 # Build settings

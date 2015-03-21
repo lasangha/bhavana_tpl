@@ -283,6 +283,13 @@ function hidePlayer(){
 
 }
 
+// Load the details for the contact email
+function loadMailDets(){
+	$('#myName').val(getKey("myName"));
+	$('#myEmail').val(getKey("myEmail"));
+}
+
+// Send a contact email
 function sendMail(){
 
 	console.log("Sending an email");
