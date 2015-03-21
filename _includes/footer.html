@@ -3,20 +3,15 @@
 	<nav data-role="navbar">
 		<ul>
 			<li><a href="about.html" data-icon="info">Acerca de</a></li>
-			<li><a href="contact.html" data-icon="mail">Apoyo</a></li>
+			<li><a href="contact.html" data-icon="mail">Apoyo?</a></li>
 		</ul>
 	</nav>
 </footer>
 
-<!--script type="text/javascript" src="cordova.js"></script>
-<script type="text/javascript" src="js/index.js"></script-->
-
 <script type="text/javascript">
 
-// Store the current page for later viewing
-storeThisPage();
-
-if(onApp){
+if(onApp == true){
+	console.log("Running as an app");
 	$.getScript("cordovajs", function(data, textStatus, jqxhr) {
 			console.log(data); //data returned
 			console.log(textStatus); //success
@@ -32,6 +27,14 @@ if(onApp){
 				app.initialize();
 				});
 			});
+
+
+}
+else{
+	$(document).ready(function($){
+		initBhavana();
+	});
+
 }
 
 </script>

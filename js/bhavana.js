@@ -2,7 +2,31 @@
 // The user must be logged in in order to use the application
 //
 
-//checkLogin();
+// If you want me to run stuff, let me know
+var runMe = [storeThisPage, checkLogin];
+
+function justRunThis(what){
+	what();
+}
+
+function initBhavana(){
+	alert("no entiendo");
+	console.log("Starting Bhavana");
+
+	if(runningOnMobile()){
+		console.log("Running on mobile, I just checked");
+		mobile = true;
+	}
+
+	// Run things that people want me to run
+	for(i = 0; i < runMe.length; i++){
+		//console.log("Running something: " + runMe[i]);
+		justRunThis(runMe[i]);
+	}
+
+
+}
+
 // I check if the user is logged in
 function checkLogin(){
 	console.log("Checking login");
@@ -12,7 +36,8 @@ function checkLogin(){
 	if(filename != "login.html" && filename != "preferences.html"){
 	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
 		console.log("User is not logged in");
-		$(location).attr('href',"login.html");
+		//$(location).attr('href',"login.html");
+		//iGoTo("login.html");
 	}
 	}
 }
@@ -21,7 +46,7 @@ function checkLogin(){
 // Some stuff that should be loaded if I am running from the app, this is not automatic, I change this if I am compiling for it
 // 
 // I'm I running from the app?
-var onApp = false;
+var onApp = true;
 
 //
 // I'm i running in a mobile device?
@@ -31,18 +56,24 @@ var mobile = false;
 var os = navigator.appVersion;
 os = os.toLowerCase();
 
+	//checkConnection();
+/*
 if(runningOnMobile()){
+	console.log("Running on mobile, I just checked");
 	mobile = true;
 }
+*/
 
 function runningOnMobile(){
 
 	console.log("I'm I running on mobile?");
 
 	if(strpos(os, 'android', 0) > 0){
+		console.log("Running on android");
 		return true;
 	}
 	if(strpos(os, 'iphone', 0) > 0){
+		console.log("Running on iphone");
 		return true;
 	}
 	return false;
@@ -61,11 +92,12 @@ function getConnectionType(){
 
 	console.log("Getting conexion type");
 
-	if(mobile){
-		console.log("I am running on mobile");
+	if(runningOnMobile() == true){
 		// Which is the connectivity at the moment
+		console.log("I am running on mobile, I can check on the connection type");
 		var networkState = navigator.connection.type;
-
+		console.log("----");
+		console.log("networkState" + networkState);
 		return networkState;
 	}
 	else{
@@ -75,19 +107,17 @@ function getConnectionType(){
 
 }
 
-// I check for connectivity, you should ask for the type of connection you want to check for,
-// If you want to see if there is NO connectivity you should say
-// if(checkConnection(false) == true) and that will tell you if there is NO connectivity
+// I check for connectivity
 function checkConnection() {
 
 	console.log("Checking for connectivity");
 
 	// Which is the connectivity at the moment
 	var networkState = getConnectionType();
-
+	console.log(networkState);
 	if(!networkState == "desktop"){
 
-		console.log("I am running on mobile");
+		console.log("I am running on mobile!");
 
 		var states = {};
 		states[Connection.UNKNOWN]  = 'Unknown connection';
@@ -105,6 +135,7 @@ function checkConnection() {
 			return false;
 		}
 		else{
+			console.log("There seems to be a connection");
 			return true;
 		}
 	}
@@ -119,7 +150,10 @@ function checkConnection() {
 
 // I will redirect somewhere
 function iGoTo(goTo){
-	$(location).attr('href',goTo);
+	//$(location).attr('href',goTo);
+	//window.location(goTo);
+	console.log("Going to: " + goTo);
+	window.location.href = goTo;
 }
 
 function sendMail(){
@@ -300,26 +334,17 @@ function storeThisPage(){
 }
 
 // Save user settings
-function saveMySettings(name, email, pwd, country){
+function saveMySettings(settings, sayThanks, goTo){
 
 	console.log("Saving settings");
 
-	// Name
-	console.log("I have a name");
-	storeKey("myName", name);
-
-	// Country
-	console.log("I live somewhere");
-	storeKey("myCountry", country);
-
-	// email
-	console.log("I have an email");
-	storeKey("myEmail", email);
-
-	// pwd
-	console.log("I have a password");
-	storeKey("myPwd", pwd);
-
+	for (var key in settings) {
+		if (settings.hasOwnProperty(key)) {
+			storeKey(key, settings[key]);
+		}
+	}
+	alert("Muchas gracias :)");
+	//iGoTo(goTo);
 }
 
 // Save user settings
@@ -340,7 +365,7 @@ function saveMySettingsForm(){
 
 // Helper function to save settings located in the form
 function _saveMySettings(){
-		saveMySettings($("#name").val(), $("#email").val(), $("#pwd").val(),$("#country").val());
+	saveMySettings($("#name").val(), $("#email").val(), $("#pwd").val(),$("#country").val());
 }
 
 function wrongPassword(){
@@ -350,7 +375,7 @@ function wrongPassword(){
 // I log the account in
 function logMeIn(callMe){
 
-	console.log("Logging in the user");
+	console.log("Logging in the user" + apiPath);
 
 	$.ajax({
 		type: 'POST',
@@ -358,16 +383,23 @@ function logMeIn(callMe){
 		dataType: "json",
 		data: {
 			what: "logUserIn",
-			email: $("#email").val(),
-			pwd: $("#pwd").val()
+		email: $("#email").val(),
+		pwd: $("#pwd").val()
 		},
 		success: function (data) {
 			console.log("Response is:" + data);
 			if(data.idUser > 0){
 				console.log("User exists, I was able to login");
-				saveMySettings(data.name, data.email, $("#pwd").val(), data.country);
-				alert("Muchas gracias :)");
-				$(location).attr('href',"index.html");
+				var settings = {
+					"myName": data.name,
+				    "myEmail": data.email,
+					"myPwd": $("#pwd").val(),
+					"myCountry": data.country
+				};
+				//saveMySettings(data.name, data.email, $("#pwd").val(), data.country, iGoTo);
+				saveMySettings(settings, true, "index.html");
+				//alert("Muchas gracias :)");
+				//iGoTo("index.html");
 				return true;
 			}
 			else if(data == "2"){
@@ -388,28 +420,28 @@ function updateUserDets(){
 
 	$.ajax({
 		type: 'POST',
-		url: apiPath,
-		dataType: "json",
-		data: {
-			what: "updateUser",
-			name: getKey("myName", "Ananda"),
-			email: getKey("myEmail", "buddha@lasangha.org"),
-			pwd: getKey("myPwd", "1234567890!"),
-			newPwd: $("#pwd").val(),
-			country: getKey("myCountry", "Nibbana")
-		},
-		success: function (data) {
-			console.log("Response is: " + data);
-			if(data == 1){
-				_saveMySettings();
-				alert("Datos actualizados");
-				return true;
-			}
-			else if(data == 0){
-				alert("La clave actual es incorrecta");
-				return false;
-			}
+	url: apiPath,
+	dataType: "json",
+	data: {
+		what: "updateUser",
+	name: getKey("myName", "Ananda"),
+	email: getKey("myEmail", "buddha@lasangha.org"),
+	pwd: getKey("myPwd", "1234567890!"),
+	newPwd: $("#pwd").val(),
+	country: getKey("myCountry", "Nibbana")
+	},
+	success: function (data) {
+		console.log("Response is: " + data);
+		if(data == 1){
+			_saveMySettings();
+			alert("Datos actualizados");
+			return true;
 		}
+		else if(data == 0){
+			alert("La clave actual es incorrecta");
+			return false;
+		}
+	}
 	});
 }
 
@@ -437,10 +469,10 @@ function registerMe(){
 		dataType: "json",
 		data: {
 			what: "addUser",
-			name: $("#name").val(), //getKey("myName", "Ananda"),
-			email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
-			pwd: $("#pwd").val(), //getKey("myPwd", "1234567890!"),
-			country: $("#countr").val(), //getKey("myCountry", "Nibbana")
+		name: $("#name").val(), //getKey("myName", "Ananda"),
+		email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
+		pwd: $("#pwd").val(), //getKey("myPwd", "1234567890!"),
+		country: $("#countr").val(), //getKey("myCountry", "Nibbana")
 		},
 		success: function (data) {
 			console.log("Response is: " + data);
@@ -537,16 +569,11 @@ function removeKey(theKey){
 	window.localStorage.removeItem(theKey);
 }
 
-//removeKey("sessionId");
-//window.localStorage.setItem("key2", "value2");
-//window.localStorage.clear();
-// localStorage is now empty
-
 // Show the intro parts one by one
+// @notInUse?
 function showIntroStuff(){
 	$(".review").each(function(index, value) { 
 		$(this).hide();
-		//    console.log('div' + index + ':' + $(this).attr('id')); 
 	});
 
 }
@@ -800,9 +827,10 @@ function adjustPaths(url){
 // I retrieve the medatitation with most meditated time
 function getMeditationMaxCauseTime(){
 
-	console.log("I will get the cause with more minutes meditated");
+	console.log("I will get the cause with more minutes meditated...");
 
-	if(checkConnection() == true){
+	//if(checkConnection() == true){
+
 		console.log("Getting times");
 
 		//Lets make the connection
@@ -823,14 +851,15 @@ function getMeditationMaxCauseTime(){
 				console.log("Something wrong?");
 			}
 		});
-	}
+	/*}
 	else{
 		console.log("Unable to get meditation causes");
 		return false;
 
-	}
-
+	}*/
+	console.log("que vida");
 }
+
 // I retrieve the medatitation times for each cause
 function getMeditationCausesTimes(){
 
