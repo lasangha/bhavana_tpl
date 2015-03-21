@@ -1,11 +1,10 @@
 # Site settings
 title: Bhavana
 email: lasanghacr@yahoo.com
-description: Aprenda a meditar y tome control de sus reacciones
+description: Su retiro personal...
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "http://192.168.43.168" # the base hostname & protocol for your site
-#destination: /var/www/html/bhavana/www
-destination: ../app/www
-include: [fonts, res, img, audio]
+destination: ../appV2/www #out
+url: "http://lasangha.org" # the base hostname & protocol for your site
+include: [audio, img, js, css]
 # Build settings
 markdown: kramdown

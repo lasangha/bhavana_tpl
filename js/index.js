@@ -47,3 +47,33 @@ var app = {
         console.log('Received Event: ' + id);
     }
 };
+
+app.initialize();
+
+function getAllMeditationTimesPerDay(){
+	alert("si!");
+//		url: "http://app.lasangha.org/api/myapi.php",
+	$.ajax({
+		type: 'GET',
+		url: "http://192.168.43.164/bhavana/api/myapi.php",
+		//url: "http://app.lasangha.org/api/myapi.php",
+		dataType: "json",
+		crossDomain: true,
+		data: {
+			what: "getAllMeditationTimesPerDay",
+			ini: 7, //Start 7 days ago
+		},
+		success: function (details) {
+			console.log("Si!");
+			alert("si que si!" + details);
+			//createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("no se que paso: " + textStatus);
+		}
+	});
+	alert("y no");
+	console.log("no entiendo un carajo");
+return false;
+}
+

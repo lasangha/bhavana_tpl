@@ -1,340 +1,62 @@
-//
-// The user must be logged in in order to use the application
-//
+// Needed variables
+var onApp = false;
 
 // If you want me to run stuff, let me know
 var runMe = [storeThisPage, checkLogin];
+
+// Path to the api
+var apiPath = "http://app.lasangha.org/api/api.php";
+var soundsPath = "http://app.lasangha.org/api/api.php";
+
+/*****************************************************************************/
+// Init sequence
+//////////////////////////////////////////////////////////////////////////////
+// If you want me to run stuff, let me know
+var runMe = [storeThisPage, checkLogin];
+
+// This is where it should all begin
+function initMe(){
+	console.log("Booting up bhavana!");
+
+	if(onApp){
+		console.log("Running on an app...");
+	}
+	else{
+		console.log("Running on a stand alone...");
+	}
+
+	// Run things that people want me to run
+	for(i = 0; i < runMe.length; i++){
+		console.log("running...");
+		justRunThis(runMe[i]);
+	}
+
+}
 
 function justRunThis(what){
 	what();
 }
 
-function initBhavana(){
-	alert("no entiendo");
-	console.log("Starting Bhavana");
+// End of init sequence
+/*****************************************************************************/
 
-	if(runningOnMobile()){
-		console.log("Running on mobile, I just checked");
-		mobile = true;
-	}
+/*****************************************************************************/
+// Users and sessions
+//////////////////////////////////////////////////////////////////////////////
 
-	// Run things that people want me to run
-	for(i = 0; i < runMe.length; i++){
-		//console.log("Running something: " + runMe[i]);
-		justRunThis(runMe[i]);
-	}
-
-
-}
-
-// I check if the user is logged in
-function checkLogin(){
-	console.log("Checking login");
-    var url = window.location.pathname;
-    var filename = url.substring(url.lastIndexOf('/')+1);
-	console.log("Checking login: " + filename);
-	if(filename != "login.html" && filename != "preferences.html"){
+// I'm I logged in?
+function isLoggedIn(){
 	if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
-		console.log("User is not logged in");
-		//$(location).attr('href',"login.html");
-		//iGoTo("login.html");
-	}
-	}
-}
-
-//
-// Some stuff that should be loaded if I am running from the app, this is not automatic, I change this if I am compiling for it
-// 
-// I'm I running from the app?
-var onApp = true;
-
-//
-// I'm i running in a mobile device?
-// Not really using it now
-//
-var mobile = false;
-var os = navigator.appVersion;
-os = os.toLowerCase();
-
-	//checkConnection();
-/*
-if(runningOnMobile()){
-	console.log("Running on mobile, I just checked");
-	mobile = true;
-}
-*/
-
-function runningOnMobile(){
-
-	console.log("I'm I running on mobile?");
-
-	if(strpos(os, 'android', 0) > 0){
-		console.log("Running on android");
-		return true;
-	}
-	if(strpos(os, 'iphone', 0) > 0){
-		console.log("Running on iphone");
-		return true;
-	}
-	return false;
-
-}
-
-// Conection states
-var thisPage = window.URL;
-var lastPage = "";
-
-var sessionId = 0;
-
-var apiPath = "http://192.168.43.164/bhavana/api/api.php";
-
-function getConnectionType(){
-
-	console.log("Getting conexion type");
-
-	if(runningOnMobile() == true){
-		// Which is the connectivity at the moment
-		console.log("I am running on mobile, I can check on the connection type");
-		var networkState = navigator.connection.type;
-		console.log("----");
-		console.log("networkState" + networkState);
-		return networkState;
-	}
-	else{
-		console.log("I will assume is a desktop");
-		return "desktop";
-	}
-
-}
-
-// I check for connectivity
-function checkConnection() {
-
-	console.log("Checking for connectivity");
-
-	// Which is the connectivity at the moment
-	var networkState = getConnectionType();
-	console.log(networkState);
-	if(!networkState == "desktop"){
-
-		console.log("I am running on mobile!");
-
-		var states = {};
-		states[Connection.UNKNOWN]  = 'Unknown connection';
-		states[Connection.ETHERNET] = 'Ethernet connection';
-		states[Connection.WIFI]     = 'WiFi connection';
-		states[Connection.CELL_2G]  = 'Cell 2G connection';
-		states[Connection.CELL_3G]  = 'Cell 3G connection';
-		states[Connection.CELL_4G]  = 'Cell 4G connection';
-		states[Connection.CELL]     = 'Cell generic connection';
-		states[Connection.NONE]     = 'No network connection';
-
-		// Lets see if I have what you need
-		if(states[networkState] == Connection.NONE){
-			console.log("No connection");
-			return false;
-		}
-		else{
-			console.log("There seems to be a connection");
-			return true;
-		}
-	}
-	else{
-		console.log("I am on a desktop, I can't really tell");
-		return true;
-	}
-
-	// Just in case
-	return false;
-}
-
-// I will redirect somewhere
-function iGoTo(goTo){
-	//$(location).attr('href',goTo);
-	//window.location(goTo);
-	console.log("Going to: " + goTo);
-	window.location.href = goTo;
-}
-
-function sendMail(){
-
-	console.log("Sending an email");
-	console.log($('#myName').val());
-
-	if(!checkConnection()){
-		console.log("No connectivity");
-		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+		console.log("not logged in");
 		return false;
-	}
-
-	$.ajax({
-		type: 'POST',
-		url: 'http://app.lasangha.org/mailer.php',
-		dataType: "json",
-		data: {
-			from: $('#myName').val(),
-		email: $('#myEmail').val(),
-		msg: $('#text').val(),
-		},
-		success: function (data) {
-			console.log(data)
-		}
-	});
-	return false;
-
-}
-
-function whereAmI(){
-	// are we running in native app or in a browser?
-	window.isphone = false;
-	if(document.URL.indexOf("http://") === -1 
-			&& document.URL.indexOf("https://") === -1) {
-				window.isphone = true;
-				window.mobile = true;
-			}
-
-	if( window.isphone) {
-		console.log("I am on a device");
-		document.addEventListener("deviceready", onDeviceReady, false);
-	} else {
-		console.log("I am on a computer");
-		onDeviceReady();
-	}
-}
-
-function onDeviceReady() {
-	// do everything here.
-}
-
-
-function getSessionId(){
-
-	console.log("Getting the session Id");
-
-	sessionId = getKey("sessionId");
-
-	if(sessionId == null || sessionId < 0){
-		sessionId = '0';
-		storeKey("sessionId", sessionId);
-	}
-}
-
-// http://phpjs.org/functions/strpos/
-function strpos(haystack, needle, offset) {
-	//  discuss at: http://phpjs.org/functions/strpos/
-	// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-	// improved by: Onno Marsman
-	// improved by: Brett Zamir (http://brett-zamir.me)
-	// bugfixed by: Daniel Esteban
-	//   example 1: strpos('Kevin van Zonneveld', 'e', 5);
-	//   returns 1: 14
-
-	var i = (haystack + '')
-		.indexOf(needle, (offset || 0));
-	return i === -1 ? false : i;
-}
-
-/**
-  @ not in use?
- */
-function showPlayer(){
-
-	console.log("I am showing the player");
-	$("#myPlayer").show();
-
-}
-
-function hidePlayer(){
-
-	if($("#cause").val() == 0){
-		console.log("I am hidding the player");
-		$("#myPlayer").hide();
-	}
-	else{
-		console.log("I am showing the player ?");
-		$("#myPlayer").show();
-		$('audio').each(function(){
-			//this.currentTime = 0; // Reset time
-			this.play(); // Stop playing
-		});
-
-		// For now I will count it as valid meditation time, I must improve this
-		// Standard meditation sessions are 3 min, I will consider other times later on
-		addToCause(3);
-	}
-
-}
-
-// @deprecated?
-function stopPlayer(){
-
-	console.log("Stopping the audio");
-
-	$('audio').each(function(){
-		this.pause(); // Stop playing
-		this.currentTime = 0; // Reset time
-	});
-
-	return true;
-}
-
-// Database
-function runDb() {
-	console.log("Running db");
-	var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
-	db.transaction(populateDB, errorCB, successCB);
-	return false;
-}
-
-// Populate the database 
-//
-function populateDB(tx) {
-	tx.executeSql('DROP TABLE IF EXISTS DEMO');
-	tx.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
-	tx.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
-	tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
-}
-
-// Transaction error callback
-//
-function errorCB(tx, err) {
-	alert("Error processing SQL: "+err);
-}
-
-// Transaction success callback
-function successCB() {
-	alert("success!");
-}
-
-function storeThisPage(){
-
-	// Re set this page
-	thisPage = document.URL;
-
-	console.log("Storing this page: >>>>> " + thisPage);
-
-	// Is this an storable page?
-	if(!strpos(thisPage, "s_")){
-		console.log("I shall not store this page!");
-		return false;
-	}
-
-	// Is it the front page?
-	console.log("Front? " + strpos(thisPage, "index.html"));
-
-	// Last page was
-	console.log("Last Page: " + getKey("lastPage"));
-
-	if(!strpos(thisPage, "index.html")){
-		console.log("Storing this page");
-		storeKey("lastPage", thisPage);
 	}else{
-		console.log("I am the front page");
+		console.log("logged in");
+		return true;
 	}
 }
 
 // Save user settings
-function saveMySettings(settings, sayThanks, goTo){
+function saveMySettings(settings, goTo, sayThanks){
 
 	console.log("Saving settings");
 
@@ -343,8 +65,10 @@ function saveMySettings(settings, sayThanks, goTo){
 			storeKey(key, settings[key]);
 		}
 	}
-	alert("Muchas gracias :)");
-	//iGoTo(goTo);
+	if(sayThanks){
+		alert(sayThanks);
+	}
+	iGoTo(goTo);
 }
 
 // Save user settings
@@ -364,88 +88,28 @@ function saveMySettingsForm(){
 }
 
 // Helper function to save settings located in the form
-function _saveMySettings(){
-	saveMySettings($("#name").val(), $("#email").val(), $("#pwd").val(),$("#country").val());
+function _saveMySettings(goTo, sayThanks){
+	saveMySettings({"myName": $("#name").val(), "myEmail": $("#email").val(), "myPwd": $("#pwd").val(), "myCountry": $("#country").val()}, goTo, sayThanks);
 }
 
-function wrongPassword(){
-	alert("Lo siento, pero esa contraseña no es correcta.");
-}
+// I check if the user is logged in
+function checkLogin(){
 
-// I log the account in
-function logMeIn(callMe){
+	var url = window.location.pathname;
+	var filename = url.substring(url.lastIndexOf('/')+1);
 
-	console.log("Logging in the user" + apiPath);
+	console.log("Checking login: " + filename);
 
-	$.ajax({
-		type: 'POST',
-		url: apiPath,
-		dataType: "json",
-		data: {
-			what: "logUserIn",
-		email: $("#email").val(),
-		pwd: $("#pwd").val()
-		},
-		success: function (data) {
-			console.log("Response is:" + data);
-			if(data.idUser > 0){
-				console.log("User exists, I was able to login");
-				var settings = {
-					"myName": data.name,
-				    "myEmail": data.email,
-					"myPwd": $("#pwd").val(),
-					"myCountry": data.country
-				};
-				//saveMySettings(data.name, data.email, $("#pwd").val(), data.country, iGoTo);
-				saveMySettings(settings, true, "index.html");
-				//alert("Muchas gracias :)");
-				//iGoTo("index.html");
-				return true;
-			}
-			else if(data == "2"){
-				alert("No existe un usuario registrado con ese correo electrónico");
-			}
-			else if(data == "0"){
-				console.log("Wrong password, but the user exists");
-				wrongPassword();
-			}
-
-		}
-	});
-	return false;
-}
-
-// Update user details after they where changed in the form
-function updateUserDets(){
-
-	$.ajax({
-		type: 'POST',
-	url: apiPath,
-	dataType: "json",
-	data: {
-		what: "updateUser",
-	name: getKey("myName", "Ananda"),
-	email: getKey("myEmail", "buddha@lasangha.org"),
-	pwd: getKey("myPwd", "1234567890!"),
-	newPwd: $("#pwd").val(),
-	country: getKey("myCountry", "Nibbana")
-	},
-	success: function (data) {
-		console.log("Response is: " + data);
-		if(data == 1){
-			_saveMySettings();
-			alert("Datos actualizados");
-			return true;
-		}
-		else if(data == 0){
-			alert("La clave actual es incorrecta");
-			return false;
+	if(filename != "login.html" && filename != "preferences.html"){
+		console.log("I must be logged in to see this page");
+		//if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
+		if(isLoggedIn() == false){
+			//console.log("User is not logged in");
+			iGoTo("login.html");
 		}
 	}
-	});
 }
 
-// I log you out
 function logOut(){
 	var keys = ['myName', 'myPwd', 'myCountry', 'myPwd', 'myEmail'];
 
@@ -469,18 +133,18 @@ function registerMe(){
 		dataType: "json",
 		data: {
 			what: "addUser",
-		name: $("#name").val(), //getKey("myName", "Ananda"),
-		email: $("#email").val(), //getKey("myEmail", "buddha@lasangha.org"),
-		pwd: $("#pwd").val(), //getKey("myPwd", "1234567890!"),
-		country: $("#countr").val(), //getKey("myCountry", "Nibbana")
+		name: $("#name").val(),
+		email: $("#email").val(),
+		pwd: $("#pwd").val(),
+		country: $("#countr").val(),
 		},
 		success: function (data) {
 			console.log("Response is: " + data);
 			if(data == 1){
-				_saveMySettings();
+				//alert("Gracias, el usuario ha sido creado.");
+				_saveMySettings("index.html", "Gracias, el usuario ha sido creado.");
 				removeKey("registering");
-				alert("Gracias, el usuario ha sido creado.");
-				iGoTo("index.html");
+				//iGoTo("index.html");
 				return true;
 			}
 			else if(data == 0){
@@ -519,30 +183,177 @@ function loadMySettings(){
 	return false;
 }
 
+function wrongPassword(){
+	alert("Lo siento, pero esa contraseña no es correcta.");
+}
 
-// I will take you to the last visited page of the course
-function gotoLastPage(){
+// I log the account in
+function logMeIn(callMe){
 
-	// Where I'm I?
-	var thisPage = document.URL;
+	console.log("Logging in the user" + apiPath);
 
-	console.log("I am in page: " + thisPage);
+	$.ajax({
+		type: 'POST',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "logUserIn",
+		email: $("#email").val(),
+		pwd: $("#pwd").val()
+		},
+		success: function (data) {
+			console.log("Response is:" + data);
+			if(data.idUser > 0){
+				console.log("User exists, I was able to login");
+				var settings = {
+					"myName": data.name,
+		"myEmail": data.email,
+		"myPwd": $("#pwd").val(),
+		"myCountry": data.country
+				};
+				saveMySettings(settings, "index.html", "Bienvenido");
+				//iGoTo("index.html");
+				return true;
+			}
+			else if(data == "2"){
+				alert("No existe un usuario registrado con ese correo electrónico");
+			}
+			else if(data == "0"){
+				console.log("Wrong password, but the user exists");
+				wrongPassword();
+			}
 
-	// Where was I?
-	var lastValue = getKey("lastPage");
+		}
+	});
+	return false;
+}
 
-	// If there is a last location, I'll go there
-	if(lastValue == null){
-		console.log("Nothing set");
-		window.location = "s_s_backToTheBody.html";
+
+// End of users and sessions
+/*****************************************************************************/
+
+/*****************************************************************************/
+// Tools
+//////////////////////////////////////////////////////////////////////////////
+
+// Alert stuff
+function alertStuff(what){
+	alert(what);
+}
+
+// I will redirect somewhere
+function iGoTo(goTo){
+	console.log("Going to: " + goTo);
+	window.location.href = goTo;
+}
+
+// http://phpjs.org/functions/strpos/
+function strpos(haystack, needle, offset) {
+	//  discuss at: http://phpjs.org/functions/strpos/
+	// original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// improved by: Onno Marsman
+	// improved by: Brett Zamir (http://brett-zamir.me)
+	// bugfixed by: Daniel Esteban
+	//   example 1: strpos('Kevin van Zonneveld', 'e', 5);
+	//   returns 1: 14
+
+	var i = (haystack + '')
+		.indexOf(needle, (offset || 0));
+	return i === -1 ? false : i;
+}
+
+function hidePlayer(){
+
+	if($("#cause").val() == 0){
+		console.log("I am hidding the player");
+		$("#myPlayer").hide();
 	}
 	else{
-		console.log("Going to: " + lastValue);
-		window.location = lastValue;
+		console.log("I am showing the player ?");
+		$("#myPlayer").show();
+		$('audio').each(function(){
+			//this.currentTime = 0; // Reset time
+			this.play(); // Stop playing
+		});
+
+		// For now I will count it as valid meditation time, I must improve this
+		// Standard meditation sessions are 3 min, I will consider other times later on
+		addToCause(3);
+	}
+
+}
+
+function sendMail(){
+
+	console.log("Sending an email");
+	console.log($('#myName').val());
+
+	/*if(!checkConnection()){
+	  console.log("No connectivity");
+	  alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+	  return false;
+	  }*/
+
+	$.ajax({
+		type: 'POST',
+		url: 'http://app.lasangha.org/api/mailer.php',
+		dataType: "json",
+		data: {
+			from: $('#myName').val(),
+		email: $('#myEmail').val(),
+		msg: $('#text').val(),
+		},
+		success: function (data) {
+			console.log(data)
+		}
+	});
+	return false;
+
+}
+
+
+// End of tools
+/*****************************************************************************/
+
+
+/*****************************************************************************/
+// Navigation
+//////////////////////////////////////////////////////////////////////////////
+
+function storeThisPage(){
+
+	// Re set this page
+	thisPage = document.URL;
+
+	console.log("Storing this page: >>>>> " + thisPage);
+
+	// Is this an storable page?
+	if(!strpos(thisPage, "s_")){
+		console.log("I shall not store this page!");
+		return false;
+	}
+
+	// Is it the front page?
+	console.log("Front? " + strpos(thisPage, "index.html"));
+
+	// Last page was
+	console.log("Last Page: " + getKey("lastPage"));
+
+	if(!strpos(thisPage, "index.html")){
+		console.log("Storing this page");
+		storeKey("lastPage", thisPage);
+	}else{
+		console.log("I am the front page");
 	}
 }
 
-// Keys
+// End of navigation
+/*****************************************************************************/
+
+/*****************************************************************************/
+// Storage
+//////////////////////////////////////////////////////////////////////////////
+
 function storeKey(key, value){
 	console.log("Storing key: " + key);
 	window.localStorage.setItem(key, value);
@@ -562,58 +373,94 @@ function getKey(key, defaultValue){
 	return value;
 }
 
-// keyname is now equal to "key"
-// value is now equal to "value"
 function removeKey(theKey){
 	console.log("Removing key: " + theKey);
 	window.localStorage.removeItem(theKey);
 }
 
-// Show the intro parts one by one
-// @notInUse?
-function showIntroStuff(){
-	$(".review").each(function(index, value) { 
-		$(this).hide();
+// End of storage
+/*****************************************************************************/
+
+// I retrieve the medatitation with most meditated time
+function getMeditationMaxCauseTime(){
+
+	console.log("I will get the cause with more minutes meditated...");
+
+	//if(checkConnection() == true){
+
+	console.log("Getting times");
+
+	//Lets make the connection
+	$.ajax({
+		type: 'GET',
+		url: apiPath,
+		dataType: "json",
+		data: {
+			what: "getCausesTimesMax",
+		},
+		success: function (data) {
+			$("#causesTotalMinutes").html(data.totalTime);
+			$("#causesCause").html(data.name);
+			console.log("Got:" + JSON.stringify(data));
+			console.log(data.totalTime)
+		},
+		error: function(){
+			console.log("Something wrong?");
+		}
 	});
+	/*}
+	  else{
+	  console.log("Unable to get meditation causes");
+	  return false;
+
+	  }*/
+}
+
+/*****************************************************************************/
+// Sessions
+//////////////////////////////////////////////////////////////////////////////
+
+// I will take you to the last visited page of the course
+function gotoLastSessionPage(){
+
+	// Where I'm I?
+	var thisPage = document.URL;
+
+	console.log("I am in page: " + thisPage);
+
+	// Where was I?
+	var lastValue = getKey("lastPage");
+
+	// If there is a last location, I'll go there
+	if(lastValue == null){
+		console.log("Nothing set");
+		iGoTo("s_s_backToTheBody.html");
+	}
+	else{
+		console.log("Going to: " + lastValue);
+		iGoTo(lastValue);
+	}
+
+	return false;
 
 }
 
-// This are all the sessions!!!!
-// Samatha 1 - Tranquilidad
-var tranquilidadBody = [];
-tranquilidadBody.push({desc:"¿De quién es el cuerpo?", cat:"Volver al cuerpo"});
-tranquilidadBody.push({desc:"¿Cómo se siente este cuerpo?", cat:"Volver al cuerpo"});
-tranquilidadBody.push({desc:"¿Dónde está el cuerpo?", cat:"Volver al cuerpo"});
-tranquilidadBodyDets = {next: "s_s_backToTheMoment.html",
-	prev: "index.html",
-	thisIs: "s_s_backToTheBody.html",
-	audios:"backToTheBody",
-	cat: "Tranquilidad",
-	subCat: "Volver al cuerpo"};
+function getSessionId(){
 
-// Samatha 2 - Momento
-var tranquilidadMomento = [];
-tranquilidadMomento.push({desc:"¿Cómo se siente este momento?", cat:"Volver al momento"});
-tranquilidadMomento.push({desc:"¿Hacia dónde se dirige el presente?", cat:"Volver al momento"});
-tranquilidadMomento.push({desc:"¿Cuánto tiempo dura este instante?", cat:"Volver al momento"});
-tranquilidadMomentoDets = {next: "s_s_backToTheMind.html", 
-	prev: "s_s_backToTheBody.html",
-	thisIs: "s_s_backToTheMoment.html",
-	audios:"backToTheMoment",
-	cat: "Tranquilidad",
-	subCat: "Volver al momento"};
+	console.log("Getting the session Id");
 
-// Samatha 3 - Mente
-var tranquilidadMente = [];
-tranquilidadMente.push({desc:"¿Quién piensa?"});
-tranquilidadMente.push({desc:"¿Dónde está el pensamiento?"});
-tranquilidadMente.push({desc:"¿Cómo se siente la mente?"});
-tranquilidadMenteDets = {next: "end.html", 
-	prev: "s_s_backToTheMoment.html",
-	thisIs: "s_s_backToTheMind.html",
-	audios:"backToTheMind",
-	cat: "Tranquilidad",
-	subCat: "Volver a la mente"};
+	sessionId = getKey("sessionId");
+
+	if(sessionId == null || sessionId < 0){
+		sessionId = '0';
+		storeKey("sessionId", sessionId);
+	}
+}
+// Set the id of the new section that is comming
+function setId(newSessionId){
+	console.log("Setting the sessionId: " + newSessionId);
+	storeKey("sessionId", newSessionId);
+}
 
 // Set sessions details
 function setSessionDetails(subjects, subjectsDets){
@@ -629,7 +476,7 @@ function setSessionDetails(subjects, subjectsDets){
 	}
 
 	console.log("Setting subjects width sessionId: " + sessionId);
-
+	console.log("Audio file: " + "audio/meditations/" + subjectsDets.audios + "_" + sessionId + ".mp3");
 	$("#sessionId").text(parseInt(sessionId) + 1);
 	$("#sessionDesc").text(subjects[sessionId].desc);
 	$("#meditationSource").attr("src", "audio/meditations/" + subjectsDets.audios + "_" + sessionId + ".mp3").detach().appendTo("#meditationPlayer");;
@@ -648,7 +495,7 @@ function setSessionDetails(subjects, subjectsDets){
 	}
 	// If this is the first id I will link to the previews section
 	if(sessionId == 0){
-		console.log("I am at the beggining, I will ink to the previews section");
+		console.log("I am at the beggining, I will link to the previews section");
 		$("#prevSession").attr("href", subjectsDets.prev);
 		$("#prevSession").attr("onClick", "setId(-1);");
 	}
@@ -660,23 +507,17 @@ function setSessionDetails(subjects, subjectsDets){
 
 }
 
-// Set the id of the new section that is comming
-function setId(newSessionId){
-	console.log("Setting the sessionId: " + newSessionId);
-	storeKey("sessionId", newSessionId);
-}
-
 // Add meditation times to the causes
 function addToCause(time){
 
 	console.log("I will try to submit this to the repository");
-
-	if(checkConnection(false) == false){
-		console.log("No connectivity");
-		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
-		return false;
-	}
-
+	/*
+	   if(checkConnection(false) == false){
+	   console.log("No connectivity");
+	   alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+	   return false;
+	   }
+	 */
 	console.log("There is connexion, lets send the details");
 
 	$.ajax({
@@ -695,6 +536,14 @@ function addToCause(time){
 		}
 	});
 }
+
+// End of sessions
+/*****************************************************************************/
+
+
+/*****************************************************************************/
+// Reports/Charts
+//////////////////////////////////////////////////////////////////////////////
 
 function createChart(chartTitle, canvasId, chartLabels, chartData, type){
 
@@ -730,12 +579,13 @@ function createChart(chartTitle, canvasId, chartLabels, chartData, type){
 // Get all meditation times per day
 function getAllMeditationTimesPerDay(){
 
-	if(checkConnection(false) == false){
-		console.log("No connectivity");
-		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
-		return false;
-	}
-
+	/*
+	   if(checkConnection(false) == false){
+	   console.log("No connectivity");
+	   alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+	   return false;
+	   }
+	 */
 	console.log("There is connexion, lets get the times");
 
 	$.ajax({
@@ -755,13 +605,13 @@ function getAllMeditationTimesPerDay(){
 
 // Get my meditation times per day
 function getMyMeditationTimesPerDay(){
-
-	if(checkConnection(false) == false){
-		console.log("No connectivity");
-		alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
-		return false;
-	}
-
+	/*
+	   if(checkConnection(false) == false){
+	   console.log("No connectivity");
+	   alert("Lo sentimos, pero se requiere de una conexión a internet para llevar a cabo esta función.");
+	   return false;
+	   }
+	 */
 	console.log("There is connexion, lets get the times");
 
 	$.ajax({
@@ -781,115 +631,41 @@ function getMyMeditationTimesPerDay(){
 
 }
 
-// I should be able to get a file path
-// Not really working
-function getFile(file){
-	console.log("Loading a file?");
-	var reader = new FileReader();
-	reader.onloadend = function (evt) {
-		console.log("read success");
-		console.log(evt.target.result);
-	};
-	reader.readAsDataURL(file);
-}
 
-function playAudio(id) {
-	var audioElement = document.getElementById(id);
-	var url = audioElement.getAttribute('src');
-	console.log("Playing this: " + url);
+// End of reports/charts
+/*****************************************************************************/
 
-	// The path must be updated in case of mobile cases
-	url = adjustPaths(url);
+function whereAmI(){
 
-	console.log(">>>>>" + cordova.file.applicationDirectory + '/www/audio/bell_2.mp3');
-	var my_media = new Media(url,
-			// success callback
-			function () { console.log("playAudio():Audio Success"); },
-			// error callback
-			function (err) { console.log("playAudio():Audio Error: " + JSON.stringify(err)); }
-			);
-	// Play audio
-	my_media.play();
-}
+	if(onApp == true){
+		console.log("I am on an app");
 
-function adjustPaths(url){
-
-	// I need to test this on other platforms
-	if(device.platform.toLowerCase() === "android"){
-		console.log("Running on android");
-		url = cordova.file.applicationDirectory + url;
-	}
-
-	return url;
-
-}
-
-// I retrieve the medatitation with most meditated time
-function getMeditationMaxCauseTime(){
-
-	console.log("I will get the cause with more minutes meditated...");
-
-	//if(checkConnection() == true){
-
-		console.log("Getting times");
-
-		//Lets make the connection
-		$.ajax({
-			type: 'GET',
-			url: apiPath,
-			dataType: "json",
-			data: {
-				what: "getCausesTimesMax",
-			},
-			success: function (data) {
-				$("#causesTotalMinutes").html(data.totalTime);
-				$("#causesCause").html(data.name);
-				console.log("Got:" + JSON.stringify(data));
-				console.log(data.totalTime)
-			},
-			fail: function(){
-				console.log("Something wrong?");
-			}
+		$.getScript( "cordova.js", function( data, textStatus, jqxhr ) {
+			document.addEventListener("deviceready", initMe, false);
+			console.log(data); // Data returned
+			console.log(textStatus); // Success
+			console.log(jqxhr.status); // 200
+			console.log("Load was performed.");
 		});
-	/*}
-	else{
-		console.log("Unable to get meditation causes");
-		return false;
 
-	}*/
-	console.log("que vida");
-}
-
-// I retrieve the medatitation times for each cause
-function getMeditationCausesTimes(){
-
-	console.log("I will get the meditation times");
-
-	if(checkConnection() == true){
-		console.log("Getting times");
-
-		//Lets make the connection
-		$.ajax({
-			type: 'GET',
-			url: apiPath,
-			dataType: "json",
-			data: {
-				what: "getCausesTimes",
-			},
-			success: function (data) {
-				console.log(data)
-			},
-			fail: function(){
-				console.log("Something wrong?");
-			}
+	}else{
+		console.log("I am on a computer");
+		$(document).bind("pageinit", function() {
+			initMe();
 		});
 	}
-	else{
-		console.log("Unable to get meditation causes");
-		return false;
+	/*
+	   console.log("Where Am I? " + document.URL);
 
-	}
-	console.log("Done macarron");
+	   if(strpos(document.URL, "http://") !== false && strpos(document.URL, "https://") !== false){
+	   onApp = true;
+	   console.log("I am on an app");
+	   document.addEventListener("deviceready", initMe, false);
+	   }else{
+	   console.log("I am on a computer");
+	   $(document).ready(function($){
+	   initMe();
+	   });
+	   }*/
 }
-
 

@@ -3,39 +3,8 @@
 	<nav data-role="navbar">
 		<ul>
 			<li><a href="about.html" data-icon="info">Acerca de</a></li>
-			<li><a href="contact.html" data-icon="mail">Apoyo?</a></li>
+			<li><a href="contact.html" data-icon="mail">Apoyo</a></li>
 		</ul>
 	</nav>
 </footer>
-
-<script type="text/javascript">
-
-if(onApp == true){
-	console.log("Running as an app");
-	$.getScript("cordovajs", function(data, textStatus, jqxhr) {
-			console.log(data); //data returned
-			console.log(textStatus); //success
-			console.log(jqxhr.status); //200
-			console.log('Load was performed.');
-			// Load the index if cordova was imported
-			$.getScript("js/index.js", function(data, textStatus, jqxhr) {
-				console.log(data); //data returned
-				console.log(textStatus); //success
-				console.log(jqxhr.status); //200
-				console.log('Load was performed.');
-				// Initialize the app
-				app.initialize();
-				});
-			});
-
-
-}
-else{
-	$(document).ready(function($){
-		initBhavana();
-	});
-
-}
-
-</script>
-
+<script>whereAmI();</script>

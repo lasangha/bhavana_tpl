@@ -3,7 +3,7 @@
 
 {% include head.html %}
 
-<body>
+<body onLoad="onLoad()">
 
 <div data-role="page" id="{{page.id}}">
 	<header data-role="header">
@@ -56,16 +56,14 @@
 
 	{% include footer.html %}
 </div><!-- end main div-->
+
+<script src="js/{{page.scriptFile}}"></script>
+
 <script>
-
-//	whereAmI();
-
-$(document).ready(function($){
-		console.log("Hiding the player");
-		hidePlayer();
-		{{page.script}}
-		});
+	runMe.push(hidePlayer);
+	runMe.push({{page.scriptExec}});
 </script>
+
 
 </body>
 
