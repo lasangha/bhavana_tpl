@@ -6,7 +6,10 @@ var runMe = [storeThisPage, checkLogin];
 
 // Path to the api
 var apiPath = "http://app.lasangha.org/api/api.php";
-var soundsPath = "http://app.lasangha.org/api/api.php";
+var soundsPath = "http://192.168.43.164/bhavana/audios/";
+
+// The current audio file to be played
+var audioFilePath = "";
 
 /*****************************************************************************/
 // Init sequence
@@ -262,6 +265,10 @@ function strpos(haystack, needle, offset) {
 	return i === -1 ? false : i;
 }
 
+function addPlayer(){		
+	$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
+}
+
 function hidePlayer(){
 
 	if($("#cause").val() == 0){
@@ -269,12 +276,13 @@ function hidePlayer(){
 		$("#myPlayer").hide();
 	}
 	else{
+		$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
 		console.log("I am showing the player ?");
-		$("#myPlayer").show();
-		$('audio').each(function(){
+		//$("#myPlayer").show();
+		//$('audio').each(function(){
 			//this.currentTime = 0; // Reset time
-			this.play(); // Stop playing
-		});
+			//this.play(); // Stop playing
+		//});
 
 		// For now I will count it as valid meditation time, I must improve this
 		// Standard meditation sessions are 3 min, I will consider other times later on
@@ -441,7 +449,7 @@ function gotoLastSessionPage(){
 	// If there is a last location, I'll go there
 	if(lastValue == null){
 		console.log("Nothing set");
-		iGoTo("s_s_backToTheBody.html");
+		iGoTo("s_i_intro.html");
 	}
 	else{
 		console.log("Going to: " + lastValue);
@@ -481,12 +489,15 @@ function setSessionDetails(subjects, subjectsDets){
 		console.log("The person is requesting a page beyond the scope of this session, I will reach my end");
 		sessionId = (Object.keys(subjects).length - 1);
 	}
+	// Path to the audio
+	audioFilePath = soundsPath + subjectsDets.audios + "_" + sessionId + ".mp3";
 
 	console.log("Setting subjects width sessionId: " + sessionId);
-	console.log("Audio file: " + "audio/meditations/" + subjectsDets.audios + "_" + sessionId + ".mp3");
+	console.log("Audio file: " + audioFilePath);
+
 	$("#sessionId").text(parseInt(sessionId) + 1);
 	$("#sessionDesc").text(subjects[sessionId].desc);
-	$("#meditationSource").attr("src", "audio/meditations/" + subjectsDets.audios + "_" + sessionId + ".mp3").detach().appendTo("#meditationPlayer");;
+	$("#meditationSource").attr("src", audioFilePath).detach().appendTo("#meditationPlayer");;
 
 	// Next and back
 	// If this is the end, I will use the next section
@@ -603,8 +614,52 @@ function getAllMeditationTimesPerDay(){
 			what: "getAllMeditationTimesPerDay",
 		ini: 7, //Start 7 days ago
 		},
-		success: function (details) {
-			createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
+		success: function (allDetails) {
+
+		var newData = {
+				labels: allDetails.dates,
+				datasets: [
+			{
+				label: "Paz",
+				fillColor: "rgba(220,220,220,0.2)",
+				strokeColor: "rgba(255,255,153,1)",
+				pointColor: "rgba(255,255,153,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(255,255,153,1)",
+				data: allDetails.details['Paz']
+			},
+			{
+				label: "Humildad",
+				fillColor: "rgba(51,255,153,0.2)",
+				strokeColor: "rgba(51,255,153,1)",
+				pointColor: "rgba(51,255,153,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(51,255,153,1)",
+				data: allDetails.details['Humildad']
+			},
+			{
+				label: "Compasión",
+				fillColor: "rgba(76,153,0,0.2)",
+				strokeColor: "rgba(76,153,0,1)",
+				pointColor: "rgba(76,153,0,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(76,153,0,1)",
+				data: allDetails.details['Compasi\u00f3n']
+			}
+			]
+			};
+			//createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
+			var ctx = document.getElementById("myChart").getContext("2d");
+			var options = {
+				responsive: true,
+				multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+			}
+			window.myLine = new Chart(ctx).Line(newData, options);
+
 		}
 	});
 

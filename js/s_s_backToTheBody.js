@@ -4,7 +4,7 @@ tranquilidadBody.push({desc:"¿De quién es el cuerpo?", cat:"Volver al cuerpo"}
 tranquilidadBody.push({desc:"¿Cómo se siente este cuerpo?", cat:"Volver al cuerpo"});
 tranquilidadBody.push({desc:"¿Dónde está el cuerpo?", cat:"Volver al cuerpo"});
 tranquilidadBodyDets = {next: "s_s_backToTheMoment.html",
-	prev: "index.html",
+	prev: "s_i_intro.html",
 	thisIs: "s_s_backToTheBody.html",
 	audios:"backToTheBody",
 	cat: "Tranquilidad",
