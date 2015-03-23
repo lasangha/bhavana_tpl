@@ -2,7 +2,7 @@
 var onApp = false;
 
 // If you want me to run stuff, let me know
-var runMe = [storeThisPage, checkLogin];
+var runMe = [storeThisPage, checkLogin, stopPlayer];
 
 // Path to the api
 var apiPath = "http://app.lasangha.org/api/api.php";
@@ -269,11 +269,17 @@ function addPlayer(){
 	$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
 }
 
+// The timer stays in the page because of jquerymobile way of generating new pages, it is best to stop if it exists
+function stopPlayer(){
+	$('#theAudioPlayer').html('<audio src=""></audio>');
+}
+
 function hidePlayer(){
 
 	if($("#cause").val() == 0){
 		console.log("I am hidding the player");
-		$("#myPlayer").hide();
+		stopPlayer();
+		//$("#myPlayer").hide();
 	}
 	else{
 		$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
@@ -286,7 +292,7 @@ function hidePlayer(){
 
 		// For now I will count it as valid meditation time, I must improve this
 		// Standard meditation sessions are 3 min, I will consider other times later on
-		addToCause(3);
+		addToCause(10);
 	}
 
 }

@@ -8,7 +8,7 @@
 <div data-role="page" id="{{page.id}}">
 	<header data-role="header">
 		{% if page.backTo %}
-		<a href="index.html" data-iconpos="notext" data-icon="home">Inicio</a>
+		<a href="index.html" data-iconpos="notext" data-icon="home" data-ajax="false">Inicio</a>
 		{% endif %}
 		<h1>Bhavana | {{page.title}}</h1>
 	</header>
@@ -30,15 +30,9 @@
 					<option value="hum">Humildad</option>
 				</select>
 			</form>
-			<div id="theAudioPlayer"></div>
 
 			<div class="ui-body ui-body-a" id="myPlayer">
-				<p>
-				<audio controls id="meditationPlayer">
-					<source src="#" type="audio/mpeg" id="meditationSource">
-					Your browser does not support the audio tag.
-				</audio>
-				</p>
+				<div id="theAudioPlayer"></div>
 			</div>
 		</div>
 	</div>
