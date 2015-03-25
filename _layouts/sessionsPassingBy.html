@@ -21,14 +21,12 @@
 				<h2><p id="sessionDesc">#</p></h2>
 		</div>
 
+		<div class="ui-body ui-body-a" id="myPlayer">
+				<div id="theAudioPlayer"></div>
+			</div>
+
 		<div class="ui-corner-all custom-corners">
 			<div class="ui-body ui-body-a" id="myPlayer">
-				<p>
-				<audio controls id="meditationPlayer">
-					<source src="#" type="audio/mpeg" id="meditationSource">
-					Your browser does not support the audio tag.
-				</audio>
-				</p>
 			</div>
 		</div>
 	</div>
@@ -50,8 +48,8 @@
 <script src="js/{{page.scriptFile}}"></script>
 
 <script>
-	//runMe.push(hidePlayer);
 	runMe.push({{page.scriptExec}});
+	runMe.push(addPlayer);
 </script>
 
 

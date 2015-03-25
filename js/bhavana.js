@@ -2,11 +2,10 @@
 var onApp = false;
 
 // If you want me to run stuff, let me know
-var runMe = [storeThisPage, checkLogin, stopPlayer];
 
 // Path to the api
 var apiPath = "http://app.lasangha.org/api/api.php";
-var soundsPath = "http://192.168.43.164/bhavana/audios/";
+var soundsPath = "http://app.lasangha.org/www/audio/meditations/";
 
 // The current audio file to be played
 var audioFilePath = "";
@@ -15,11 +14,12 @@ var audioFilePath = "";
 // Init sequence
 //////////////////////////////////////////////////////////////////////////////
 // If you want me to run stuff, let me know
-var runMe = [storeThisPage, checkLogin];
+var runMe = [storeThisPage, checkLogin, stopPlayer];
 
 // This is where it should all begin
 function initMe(){
-	console.log("Booting up bhavana!");
+
+	console.log("Booting up bhavana!!");
 
 	if(onApp){
 		console.log("Running on an app...");
@@ -105,18 +105,17 @@ function checkLogin(){
 
 	if(filename != "login.html" && filename != "preferences.html"){
 		console.log("I must be logged in to see this page");
-		//if(getKey("myEmail", "buddha@lasangha.org") == "buddha@lasangha.org"){
 		if(isLoggedIn() == false){
-			//console.log("User is not logged in");
 			iGoTo("login.html");
 		}
 	}
 }
 
 function logOut(){
-	var keys = ['myName', 'myPwd', 'myCountry', 'myPwd', 'myEmail'];
 
-	for(i = 0; i < 5; i++){
+	var keys = ['myName', 'myPwd', 'myCountry', 'myPwd', 'myEmail', 'var_coordinatesLatitude', 'var_coordinatesLongitude'];
+
+	for(i = 0; i < 7; i++){
 		console.log("removing" + keys[i]);
 		removeKey(keys[i]);
 	}
@@ -164,15 +163,6 @@ function registerMe(){
 // Load them in the settings form
 function loadMySettings(){
 	console.log("Loading settings");
-
-	/*
-	   if(getKey("meditateWithThemAll", true) == 'true'){
-	   console.log("I will participate with the global meditations");
-	   $("#meditateWithThemAll").attr("checked", true);
-	   }else{
-	   console.log("Uncheking the meditation with them all");
-	   $("#meditateWithThemAll").attr("checked", false);
-	   }*/
 
 	// Is this a new user?
 	if(getKey("myName", "buddha") == "buddha"){
@@ -265,34 +255,39 @@ function strpos(haystack, needle, offset) {
 	return i === -1 ? false : i;
 }
 
-function addPlayer(){		
+function addPlayer(time){
+
+	console.log("I am showing the player: " + audioFilePath);
+
 	$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
+
+	if(time > 0){
+		addToCause(time);
+	}
 }
 
 // The timer stays in the page because of jquerymobile way of generating new pages, it is best to stop if it exists
 function stopPlayer(){
+	console.log("Stopping the player");
 	$('#theAudioPlayer').html('<audio src=""></audio>');
 }
 
-function hidePlayer(){
+
+function loadPlayer(){
+
+	//console.log("Hidding the player!!!");
+	// This needs a better place to live
+	//setCoordinates();
 
 	if($("#cause").val() == 0){
-		console.log("I am hidding the player");
+		//console.log("I am hidding the player");
 		stopPlayer();
 		//$("#myPlayer").hide();
 	}
 	else{
-		$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
-		console.log("I am showing the player ?");
-		//$("#myPlayer").show();
-		//$('audio').each(function(){
-			//this.currentTime = 0; // Reset time
-			//this.play(); // Stop playing
-		//});
-
-		// For now I will count it as valid meditation time, I must improve this
-		// Standard meditation sessions are 3 min, I will consider other times later on
-		addToCause(10);
+		addPlayer(10);
+		//$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
+		//addToCause(10);
 	}
 
 }
@@ -542,6 +537,7 @@ function addToCause(time){
 	   return false;
 	   }
 	 */
+
 	console.log("There is connexion, lets send the details");
 
 	$.ajax({
@@ -550,10 +546,9 @@ function addToCause(time){
 		dataType: "json",
 		data: {
 			what: "addToCause",
-		causeCode: $('#cause').val(),
-		totalTime: time,
-		where: getKey("myCountry", "Nibbana"),
-		email: getKey("myEmail", "buddha@lasangha.org")
+			causeCode: $('#cause').val(),
+			totalTime: time,
+			email: getKey("myEmail", "buddha@lasangha.org"),
 		},
 		success: function (data) {
 			console.log(data)
@@ -622,40 +617,40 @@ function getAllMeditationTimesPerDay(){
 		},
 		success: function (allDetails) {
 
-		var newData = {
+			var newData = {
 				labels: allDetails.dates,
-				datasets: [
-			{
-				label: "Paz",
-				fillColor: "rgba(220,220,220,0.2)",
-				strokeColor: "rgba(255,255,153,1)",
-				pointColor: "rgba(255,255,153,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(255,255,153,1)",
-				data: allDetails.details['Paz']
-			},
-			{
-				label: "Humildad",
-				fillColor: "rgba(51,255,153,0.2)",
-				strokeColor: "rgba(51,255,153,1)",
-				pointColor: "rgba(51,255,153,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(51,255,153,1)",
-				data: allDetails.details['Humildad']
-			},
-			{
-				label: "Compasión",
-				fillColor: "rgba(76,153,0,0.2)",
-				strokeColor: "rgba(76,153,0,1)",
-				pointColor: "rgba(76,153,0,1)",
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(76,153,0,1)",
-				data: allDetails.details['Compasi\u00f3n']
-			}
-			]
+		datasets: [
+	{
+		label: "Paz",
+		fillColor: "rgba(220,220,220,0.2)",
+		strokeColor: "rgba(255,255,153,1)",
+		pointColor: "rgba(255,255,153,1)",
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(255,255,153,1)",
+		data: allDetails.details['Paz']
+	},
+	{
+		label: "Humildad",
+		fillColor: "rgba(51,255,153,0.2)",
+		strokeColor: "rgba(51,255,153,1)",
+		pointColor: "rgba(51,255,153,1)",
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(51,255,153,1)",
+		data: allDetails.details['Humildad']
+	},
+	{
+		label: "Compasión",
+		fillColor: "rgba(76,153,0,0.2)",
+		strokeColor: "rgba(76,153,0,1)",
+		pointColor: "rgba(76,153,0,1)",
+		pointStrokeColor: "#fff",
+		pointHighlightFill: "#fff",
+		pointHighlightStroke: "rgba(76,153,0,1)",
+		data: allDetails.details['Compasi\u00f3n']
+	}
+	]
 			};
 			//createChart("Meditaciones grupales por día", "myChart", details.labels, details.times, 'lines');
 			var ctx = document.getElementById("myChart").getContext("2d");
