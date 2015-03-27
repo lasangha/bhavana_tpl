@@ -257,11 +257,12 @@ function strpos(haystack, needle, offset) {
 
 function addPlayer(time){
 
-	console.log("I am showing the player: " + audioFilePath);
+	console.log("I am showing the player: " + audioFilePath + " time " + time);
 
 	$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
 
 	if(time > 0){
+		console.log("Add time to the causes");
 		addToCause(time);
 	}
 }
@@ -275,19 +276,11 @@ function stopPlayer(){
 
 function loadPlayer(){
 
-	//console.log("Hidding the player!!!");
-	// This needs a better place to live
-	//setCoordinates();
-
 	if($("#cause").val() == 0){
-		//console.log("I am hidding the player");
 		stopPlayer();
-		//$("#myPlayer").hide();
 	}
 	else{
 		addPlayer(10);
-		//$('#theAudioPlayer').html('<audio src="' + audioFilePath + '" autoload="true" autoplay="true" id="audioFile" controls/>');
-		//addToCause(10);
 	}
 
 }
@@ -529,7 +522,8 @@ function setSessionDetails(subjects, subjectsDets){
 // Add meditation times to the causes
 function addToCause(time){
 
-	console.log("I will try to submit this to the repository");
+	console.log("I will submit this time to the causes");
+
 	/*
 	   if(checkConnection(false) == false){
 	   console.log("No connectivity");
@@ -694,6 +688,45 @@ function getMyMeditationTimesPerDay(){
 
 }
 
+function createMap(){
+
+	console.log("creating the map");
+
+	var styleFunction = function(feature, resolution) {
+		style = [new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 25,
+			fill: new ol.style.Fill({
+				color: 'rgba(255, 153, 0, 0.4)'
+			}),
+			stroke: new ol.style.Stroke({
+				color: 'rgba(255, 204, 0, 0.2)',
+			width: 1
+			})
+			})
+		})];
+		return style;
+	};
+
+	var map = new ol.Map({
+		target: 'myMap',
+		layers: [
+		new ol.layer.Tile({
+			source: new ol.source.OSM()
+		}),
+			new ol.layer.Vector({
+				source: new ol.source.GeoJSON({
+					projection: 'EPSG:3857',
+					url: apiPath + '?what=getMeditationLocations'
+				})
+			})
+	],
+		view: new ol.View({
+			center: [0, 0],
+			zoom: 1
+		}),
+	});
+}
 
 // End of reports/charts
 /*****************************************************************************/
@@ -731,4 +764,5 @@ function whereAmI(){
 	   });
 	   }*/
 }
+
 
